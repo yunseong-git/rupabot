@@ -1,12 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-shop.dto';
 import { BuyItemDto } from './dto/buy-item.dto';
+import { Response, Request } from 'express';
 
 @Controller('shop')
 export class ShopController {
-  constructor(private readonly shopService: ShopService) { }
+  constructor(private readonly shopService: ShopService) {}
 
   @Post()
   create(@Body() createItemDto: CreateItemDto) {
@@ -14,8 +15,9 @@ export class ShopController {
   }
 
   @Get()
-  findAll() {
-    return this.shopService.findAll();
+  findAll(@Req() req: Request) {
+    const userId = "123"
+    return this.shopService.findAll(userId);
   }
 
   @Get(':id')
@@ -24,10 +26,7 @@ export class ShopController {
   }
 
   @Post(':itemId/buy')
-  async buyItem(
-    @Param('itemId') itemId: string,
-    @Body() dto: BuyItemDto
-  ) {
+  async buyItem(@Param('itemId') itemId: string, @Body() dto: BuyItemDto) {
     return this.shopService.buyItem(dto.userId, itemId);
   }
 

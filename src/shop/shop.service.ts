@@ -3,15 +3,13 @@ import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Model, Connection } from 'mongoose';
 import { BadRequestException } from '@nestjs/common';
 
-import { UsersService } from 'src/users/users.service';
-import { WalletService } from 'src/wallet/wallet.service';
+import { UsersModule } from 'src/users/users.module';
 
 import { Item, ItemDocument } from './schemas/item.schema';
 import { User,UserDocument } from 'src/users/schemas/user.schema';
 import { Wallet,WalletDocument } from '../wallet/schemas/wallet.schema';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-shop.dto';
-import { BuyItemDto } from './dto/buy-item.dto';
 
 @Injectable()
 export class ShopService {
@@ -19,7 +17,7 @@ export class ShopService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     @InjectModel(Item.name) private readonly itemModel: Model<ItemDocument>,
     @InjectModel(Wallet.name) private readonly walletModel: Model<WalletDocument>,
-    @InjectConnection() private readonly connection: Connection, // 👈 이게 핵심!
+    @InjectConnection() private readonly connection: Connection, //트랜잭션 위함
   ) { }
 
   async create(dto: CreateItemDto) {
@@ -27,8 +25,11 @@ export class ShopService {
     return created.save();
   }
 
-  async findAll() {
-    return this.itemModel.find().exec();
+  async findAll(userId: string) {
+    const user = await this.userModel.findById(userId).lean();
+    const items = this.itemModel.find().select('name price').lean();
+
+    return 
   }
 
   async findOne(id: string) {

@@ -1,12 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-export type PostDocument = Post & Document;
-
 @Schema({ timestamps: true })
-export class Post {
+export class Post extends Document {
   @Prop({ required: true })
-  authorId: string; // 유저 _id (추후 관계 연동)
+  authorId: string;
 
   @Prop({ required: true })
   title: string;
@@ -14,20 +12,17 @@ export class Post {
   @Prop({ required: true })
   content: string;
 
+  @Prop({ enum: ['free', 'question'], default: 'free' }) // 자유/질문 게시판
+  tag: 'free' | 'question';
+
   @Prop({ type: [String], default: [] })
-  tags: string[];
+  images: string[]; // 이미지 경로들
 
-  @Prop({ default: 0 })
-  views: number;
+  @Prop({default: 0})
+  likecount: number; // 좋아요 누른 유저 ID들
 
-  @Prop({ default: 0 })
-  likes: number;
-
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }], default: [] })
-  comments: Types.ObjectId[]; // 댓글 참조
-
-  @Prop({ default: false })
-  isDeleted: boolean;
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  selectedCommentId?: Types.ObjectId; // 질문 채택 댓글
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

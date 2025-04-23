@@ -12,6 +12,7 @@ import { ShopModule } from './shop/shop.module';
 import { WalletModule } from './wallet/wallet.module';
 import { BattleModule } from './battle/battle.module';
 import { AuthModule } from './auth/auth.module';
+import { RedisModule } from './redis/redis.module';
 
 
 @Module({
@@ -37,7 +38,10 @@ import { AuthModule } from './auth/auth.module';
     ShopModule,
     BattleModule,
     WalletModule,
-    AuthModule],
+    AuthModule,
+    RedisModule
+
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
