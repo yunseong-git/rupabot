@@ -5,11 +5,14 @@ export type CommentDocument = Comment & Document;
 
 @Schema({ timestamps: true })
 export class Comment {
-  @Prop({ required: true })
+  @Prop({ required: true, ref: 'Post' })
   postId: Types.ObjectId;
 
-  @Prop({ required: true })
-  authorId: string;
+  @Prop({ required: true, ref: 'User' })
+  authorId: Types.ObjectId;
+
+  @Prop() //대댓글
+  pId: Types.ObjectId;
 
   @Prop({ required: true })
   content: string;

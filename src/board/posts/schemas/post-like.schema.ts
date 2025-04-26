@@ -1,14 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
+export type PostLikeDocument = PostLike & Document;
+
 @Schema({ timestamps: true })
-export class Like {
+export class PostLike {
   @Prop({ required: true, ref: 'User' })
-  userId: string;
+  userId: Types.ObjectId;
 
   @Prop({ required: true, ref: 'Post' })
-  postId: string;
+  postId: Types.ObjectId;
 }
 
-export const LikeSchema = SchemaFactory.createForClass(Like);
+export const LikeSchema = SchemaFactory.createForClass(PostLike);
 LikeSchema.index({ userId: 1, postId: 1 }, { unique: true }); // 중복 방지
