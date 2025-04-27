@@ -5,6 +5,7 @@ import { User } from 'src/common/decorators/user.decorator';
 
 import { PostDocument } from './schemas/post.schema';
 import { PostsService } from './posts.service';
+import { SoftDeleteService } from 'src/shared/services/soft-delete.service';
 import { CommentsService } from '../comments/comments.service';
 import { PostWithCommentsResponse } from '../types/board.types';
 
@@ -17,7 +18,8 @@ import { PostQueryDto, LikedPostQueryDto, SearchedPostQueryDto, DeletedPostQuery
 export class PostsController {
     constructor(
         private readonly postsService: PostsService,
-        private readonly commentsService: CommentsService
+        private readonly commentsService: CommentsService,
+        private readonly softDeleteService: SoftDeleteService,
     ) { }
 
     /**<기본조회>
@@ -87,7 +89,8 @@ export class PostsController {
     }
 
     @Delete(':postId')
-    async deletePost(@Param('postId') postId: string, @User('userId') userId: string): Promise<PostDocument> {
-        return await this.postsService.deletePost(postId, userId);
+    async deletePost(@Param('postId') postId: string, @User('userId') userId: string) {
+        await this.postsService.isAuthor(postId,userId);
+        return await this.softDeleteService.softDeletePost(postId)
     }
 }

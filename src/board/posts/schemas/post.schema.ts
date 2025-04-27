@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document, Types, Query } from 'mongoose';
 
 export type PostDocument = Post & Document;
 
@@ -14,7 +14,7 @@ export class Post {
   @Prop({ required: true })
   content: string;
 
-  @Prop({ enum: ['free','cs'], default: 'free' })
+  @Prop({ enum: ['free', 'cs'], default: 'free' })
   type: 'free' | 'cs'; //게시판 종류
 
   @Prop({ type: [String], default: [] })
@@ -33,7 +33,7 @@ export class Post {
   isDeleted: boolean;
 
   @Prop({ type: Types.ObjectId, ref: 'Comment' })
-  bestComment?: Types.ObjectId; 
+  bestComment?: Types.ObjectId;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
