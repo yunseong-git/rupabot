@@ -33,8 +33,7 @@ export class SoftDeleteService {
     );
 
     await this.commentLikeModel.deleteMany(
-      { postId },
-      { $set: { isDeleted: true } }
+      { postId }
     );
   }
 
@@ -45,6 +44,10 @@ export class SoftDeleteService {
       { $set: { isDeleted: true } }
     );
     // 답글(reply)들은 그대로 둔다 (답글은 독립적으로 관리할 예정)
+
+    await this.commentLikeModel.deleteMany(
+      { commentId },
+    );
   }
 
   // User 삭제

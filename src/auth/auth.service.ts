@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
 //reference
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/users/service/user-query.service';
 import { RedisService } from 'src/redis/redis.service';
 
 //dto
