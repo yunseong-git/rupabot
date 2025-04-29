@@ -11,7 +11,7 @@ import { RedisService } from 'src/redis/redis.service';
 //dto
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { CreateUserDto } from 'src/users/dto/req/create-user.dto';
 import { User, UserDocument } from 'src/users/schemas/user.schema';
 
 interface JwtPayload {

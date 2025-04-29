@@ -2,7 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../schemas/user.schema';
 import { Model, SortOrder } from 'mongoose';
-import { UserQueryDto, SearchUserQueryDto, UserRankQueryDto } from '../dto/user-query.dto';
+import { UserQueryDto, SearchUserQueryDto, UserRankQueryDto } from '../dto/req/user-query.dto';
+import { RANK_CONDITIONS, RankType, RANK_ORDER } from '../constants/rank-constants';
+import { GetRankConditionResDto, RequirementDetail } from '../dto/res/getRankCondition-Res.dto';
 
 type FindOptions = {
   sortOption?: Record<string, SortOrder>;
@@ -86,6 +88,39 @@ export class UserQueryService {
     const user = await this.userModel.findById(id).select('items');
     if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
     return user.items;
+  }
+
+  async getRankCondition(user: UserDocument): Promise<GetRankConditionResDto> {
+    const currentRank = user.rank;
+    const currentRankIndex = RANK_ORDER.indexOf(user.rank as RankType);
+    const nextRank = RANK_ORDER[currentRankIndex + 1];
+    const condition = RANK_CONDITIONS[nextRank];
+
+    const attendCountRequirement: RequirementDetail = {
+      current: user.attendcount,
+      required: condition.attendcount,
+      isAchieved: user.attendcount >= condition.attendcount,
+    };
+
+    const rupaRequirement: RequirementDetail = {
+      current: user.rupa,
+      required: condition.rupa,
+      isAchieved: user.rupa >= condition.rupa,
+    };
+
+    const canRankUp = attendCountRequirement.isAchieved && rupaRequirement.isAchieved;
+
+    const result: GetRankConditionResDto = {
+      currentRank,
+      nextRank,
+      requirements: {
+        attendCount: attendCountRequirement,
+        rupa: rupaRequirement,
+      },
+      canRankUp,
+    };
+
+    return result;
   }
 
   /* 추후 transaction으로 이동

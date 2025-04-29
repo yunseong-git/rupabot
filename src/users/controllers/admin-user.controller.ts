@@ -1,11 +1,11 @@
-import { Controller, Get, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Patch, Param, Delete, UseGuards, Query, Body } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RankGuard } from 'src/common/guards/rank.guard';
 import { Rank } from 'src/common/decorators/rank.decorator';
 import { UserQueryService } from '../service/user-query.service';
 import { UserCommandService } from '../service/user-command.service';
-import { SoftDeleteService } from 'src/shared/services/soft-delete.service';
-import { UserQueryDto, SearchUserQueryDto } from '../dto/user-query.dto';
+import { UserQueryDto, SearchUserQueryDto } from '../dto/req/user-query.dto';
+import { UserDocument } from '../schemas/user.schema';
 
 @Controller('admin/users')
 @UseGuards(AuthGuard, RankGuard)
@@ -14,7 +14,6 @@ export class AdminUserController {
   constructor(
     private readonly userQueryService: UserQueryService,
     private readonly userCommandService: UserCommandService,
-    private readonly softDeleteService: SoftDeleteService,
   ) {}
 
   @Get()
@@ -32,7 +31,6 @@ export class AdminUserController {
     return await this.userQueryService.searchUsers(query);
   }
 
-  //todo: 조금 더 RESTfull하게? id는 param 나머지는 쿼리로고민
   @Get(':id/byId')
   async getUsersById(@Param('id') id: string) {
     return await this.userQueryService.findUserById(id);
@@ -48,13 +46,15 @@ export class AdminUserController {
     return await this.userQueryService.findUserByNickname(nickname);
   }
 
-  @Patch(':nickname/byNickname')
-  async updateUser(@Param('nickname') nickname: string) {
-    return await this.userQueryService.findUserByNickname(nickname);
+  @Patch('active/ban')
+  async activateUserBan(@Param('id') id: string, @Body() bancount: number): Promise<UserDocument> {
+    const user = await this.userQueryService.findUserById(id);
+    return await this.userCommandService.activateUserBan(user, bancount);
   }
 
-  @Patch(':nickname/byNickname')
-  async deleteUser(@Param('nickname') nickname: string) {
-    return await this.userQueryService.findUserByNickname(nickname);
+  @Patch('deactive/ban')
+  async deactivateUserBan(@Param('id') id: string): Promise<UserDocument> {
+    const user = await this.userQueryService.findUserById(id);
+    return await this.userCommandService.deactivateUserBan(user);
   }
 }

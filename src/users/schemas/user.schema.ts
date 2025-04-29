@@ -18,9 +18,13 @@ export class User {
   image: string;
 
   @Prop({ default: 0 })
-  lupa: number;
+  rupa: number;
 
-  @Prop({ required: true, default: '응애루파' })
+  @Prop({
+    required: true,
+    enum: ['응애루파', '루파', '골드루파', '에매루파', '다이아루파', '루비루파', '루파킹'],
+    default: '응애루파',
+  })
   rank: string;
 
   @Prop({ default: null })
@@ -33,7 +37,7 @@ export class User {
   nicknameUpdatedAt: Date;
 
   @Prop({ default: 0 })
-  bannedcount: number;
+  bancount: number;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Item' }], default: [] })
   items: Types.ObjectId[];
