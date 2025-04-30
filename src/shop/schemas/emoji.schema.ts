@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type ItemDocument = Item & Document;
+export type EmojiDocument = Emoji & Document;
 
 @Schema({ timestamps: true })
-export class Item {
+export class Emoji {
   @Prop({ required: true, unique: true })
   name: string; // 하이루파, 히잉루파 등
 
@@ -18,4 +18,4 @@ export class Item {
   image: string; // 이미지 경로 또는 파일명
 }
 
-export const ItemSchema = SchemaFactory.createForClass(Item);
+export const ItemSchema = SchemaFactory.createForClass(Emoji);

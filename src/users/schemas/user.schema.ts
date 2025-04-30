@@ -39,8 +39,8 @@ export class User {
   @Prop({ default: 0 })
   bancount: number;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Item' }], default: [] })
-  items: Types.ObjectId[];
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Emoji' }], default: [] })
+  emojis: Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../schemas/user.schema';
 import { Model } from 'mongoose';
 import { CreateUserDto } from '../dto/req/create-user.dto';
-import { GetRankConditionResDto } from '../dto/res/getRankCondition-Res.dto';
+import { GetRankConditionResDto } from '../dto/res/user-rank-response.dto';
 import { BAN_ORDER } from '../constants/ban-constants';
 
 @Injectable()

@@ -3,8 +3,9 @@ import { UserQueryService } from '../service/user-query.service';
 import { User } from 'src/common/decorators/user.decorator';
 import { UpdateNicknameDto } from '../dto/req/update-user.dto';
 import { UserCommandService } from '../service/user-command.service';
-import { GetRankConditionResDto } from '../dto/res/getRankCondition-Res.dto';
+import { GetRankConditionResDto } from '../dto/res/user-rank-response.dto';
 import { UserDocument } from '../schemas/user.schema';
+import { PopulatedEmoji } from '../types/populate.type';
 
 @Controller('users')
 export class UsersController {
@@ -39,8 +40,8 @@ export class UsersController {
   }
 
   @Get('item')
-  async getUserItems(@User('id') id: string) {
-    return await this.userQueryService.getOwnedItemIds(id);
+  async getUserItems(@User('id') id: string): Promise<PopulatedEmoji[]> {
+    return await this.userQueryService.getOwnedEmojis(id);
   }
 
   @Patch('nickname')

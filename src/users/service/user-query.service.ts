@@ -2,17 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../schemas/user.schema';
 import { Model, SortOrder } from 'mongoose';
+import { PopulatedEmoji, UserWithPopulatedEmoji } from '../types/populate.type';
 import { UserQueryDto, SearchUserQueryDto, UserRankQueryDto } from '../dto/req/user-query.dto';
 import { RANK_CONDITIONS, RankType, RANK_ORDER } from '../constants/rank-constants';
-import { GetRankConditionResDto, RequirementDetail } from '../dto/res/getRankCondition-Res.dto';
+import { GetRankConditionResDto, RequirementDetail } from '../dto/res/user-rank-response.dto';
+import { FindOptions } from '../types/sort.type';
 
-type FindOptions = {
-  sortOption?: Record<string, SortOrder>;
-};
 
 @Injectable()
 export class UserQueryService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
 
   async findAllUsers(query: UserQueryDto) {
     const { sort, limit = 10, skip = 0 } = query;
@@ -78,16 +77,14 @@ export class UserQueryService {
     return user;
   }
 
-  async findUserByNickname(nickname: string) {
-    const user = await this.userModel.findOne({ nickname: nickname }).exec();
-    if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
-    return user;
-  }
+  async getOwnedEmojis(id: string):Promise<PopulatedEmoji[]> {
+    const user = await this.userModel.findById(id)
+      .populate({ path: 'emojis', select: 'image', }).select('emojis')
+      .exec() as unknown as UserWithPopulatedEmoji;
 
-  async getOwnedItemIds(id: string) {
-    const user = await this.userModel.findById(id).select('items');
     if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
-    return user.items;
+
+    return user.emoji;
   }
 
   async getRankCondition(user: UserDocument): Promise<GetRankConditionResDto> {

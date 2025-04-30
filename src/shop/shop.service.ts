@@ -5,7 +5,7 @@ import { BadRequestException } from '@nestjs/common';
 
 import { UsersModule } from 'src/users/users.module';
 
-import { Item, ItemDocument } from './schemas/item.schema';
+import { Item, ItemDocument } from './schemas/emoji.schema';
 import { User,UserDocument } from 'src/users/schemas/user.schema';
 import { Wallet,WalletDocument } from '../wallet/schemas/wallet.schema';
 import { CreateItemDto } from './dto/create-item.dto';

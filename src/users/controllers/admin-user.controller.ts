@@ -41,11 +41,6 @@ export class AdminUserController {
     return await this.userQueryService.findUserByEmail(email);
   }
 
-  @Get(':nickname/byNickname')
-  async getUsersByNickname(@Param('nickname') nickname: string) {
-    return await this.userQueryService.findUserByNickname(nickname);
-  }
-
   @Patch('active/ban')
   async activateUserBan(@Param('id') id: string, @Body() bancount: number): Promise<UserDocument> {
     const user = await this.userQueryService.findUserById(id);
