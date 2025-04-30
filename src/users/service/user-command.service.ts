@@ -1,10 +1,17 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../schemas/user.schema';
 import { Model } from 'mongoose';
-import { CreateUserDto } from '../dto/req/create-user.dto';
-import { GetRankConditionResDto } from '../dto/res/user-rank-response.dto';
+
+//types, constants
 import { BAN_ORDER } from '../constants/ban-constants';
+
+//req dto
+import { CreateUserDto } from '../dto/req/create-user.dto';
+
+//res dto
+import { RankConditionResponseDto } from '../dto/res/user-rank-response.dto';
+import { UserBanResponseDto, UpdateUserNicknameResponseDto, UserRankUpResponseDto } from '../dto/res/update-user-response.dto';
 
 @Injectable()
 export class UserCommandService {
@@ -15,38 +22,73 @@ export class UserCommandService {
     return created.save();
   }
 
-  async updateUserNickname(user: UserDocument, newNickname: string) {
+  /** <update user>
+   * updateUserNickname: 유저 닉네임 변경
+   * response - UpdateUserNicknameResponseDto
+   * private validateNicknameChange: 유저 닉네임 변경 가능성 확인
+   *
+   * updateUserRank: 유저 랭크 업
+   * response - RankConditionResponseDto
+   *
+   * (de)activateUserBan: 유저 밴(해제)
+   * response - UserBanResponseDto
+   */
+  async updateUserNickname(user: UserDocument, newNickname: string): Promise<UpdateUserNicknameResponseDto> {
     await this.validateNicknameChange(user, newNickname);
+
+    const nickname = user.nickname;
 
     user.nickname = newNickname;
     user.nicknameUpdatedAt = new Date();
     await user.save();
+
+    return {
+      updatedAt: user.nicknameUpdatedAt,
+      nickname: nickname,
+      newNickname: user.nickname,
+    };
   }
 
-  async updateUserRank(user: UserDocument, condition: GetRankConditionResDto): Promise<UserDocument> {
+  async updateUserRank(user: UserDocument, condition: RankConditionResponseDto): Promise<UserRankUpResponseDto> {
     if (!condition.canRankUp) throw new BadRequestException('랭크업이 불가능합니다.');
 
     user.rank = condition.nextRank;
-    return await user.save();
+    await user.save();
+
+    return {
+      nickname: user.nickname,
+      newRank: user.rank,
+      updatedAt: new Date(),
+    }
   }
 
-  async activateUserBan(user: UserDocument, bancount: number): Promise<UserDocument> {
-    if (!BAN_ORDER.indexOf(bancount)) {
+  async activateUserBan(user: UserDocument, bancount: number): Promise<UserBanResponseDto> {
+    if (!BAN_ORDER.includes(bancount)) {
       throw new BadRequestException('명시된 일수만 정지가 가능합니다.');
     }
     user.bancount += bancount;
-    return await user.save();
+    await user.save();
+    return {
+      nickname: user.nickname,
+      bancount: user.bancount,
+      updatecount: bancount,
+    };
   }
 
-  async deactivateUserBan(user: UserDocument): Promise<UserDocument> {
+  async deactivateUserBan(user: UserDocument): Promise<UserBanResponseDto> {
     if (user.bancount == 0) {
       throw new BadRequestException('정지되지 않은 유저입니다.');
     }
     user.bancount = 0;
-    return await user.save();
+    await user.save();
+    return {
+      nickname: user.nickname,
+      bancount: user.bancount,
+      updatecount: 0,
+    };
   }
 
-  async validateNicknameChange(user: UserDocument, newNickname: string): Promise<void> {
+  private async validateNicknameChange(user: UserDocument, newNickname: string): Promise<void> {
     if (user.nicknameUpdatedAt) {
       const daysPassed = (Date.now() - new Date(user.nicknameUpdatedAt).getTime()) / (1000 * 60 * 60 * 24);
       if (daysPassed < 30) {
@@ -58,17 +100,4 @@ export class UserCommandService {
       throw new BadRequestException('이미 사용 중인 닉네임입니다.');
     }
   }
-
-  /* 추후 트랜잭션으로 이동
-  async addItem(userId: string, itemId: string, price: number, session?: ClientSession) {
-    return this.userModel.findByIdAndUpdate(
-      userId,
-      {
-        $inc: { lupa: -price },
-        $push: { items: itemId },
-      },
-      { new: true, session },
-    );
-  }
-    */
 }

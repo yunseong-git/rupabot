@@ -1,19 +1,35 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../schemas/user.schema';
-import { Model, SortOrder } from 'mongoose';
-import { PopulatedEmoji, UserWithPopulatedEmoji } from '../types/populate.type';
-import { UserQueryDto, SearchUserQueryDto, UserRankQueryDto } from '../dto/req/user-query.dto';
+import { Model } from 'mongoose';
+import { plainToInstance } from 'class-transformer';
+
+//types, constants
 import { RANK_CONDITIONS, RankType, RANK_ORDER } from '../constants/rank-constants';
-import { GetRankConditionResDto, RequirementDetail } from '../dto/res/user-rank-response.dto';
 import { FindOptions } from '../types/sort.type';
 
+//req dto
+import { UsersQueryDto, SearchUsersQueryDto } from '../dto/req/user-query.dto';
+
+//res dto
+import { UserToUserResponseDto, SingleUserResponseDto, ManyUsersResponseDto } from '../dto/res/user-query-response.dto';
+import { RankConditionResponseDto, RequirementDetail } from '../dto/res/user-rank-response.dto';
+import { OwnedEmojiResponseDto } from '../dto/res/user-emoji-response.dto';
 
 @Injectable()
 export class UserQueryService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async findAllUsers(query: UserQueryDto) {
+  /** <many users>
+   * findAllUsers: 모든 유저 find(sorting 선택)
+   * SearchUsers: 닉네임 중 특정단어 포함된 유저 find
+   * findBannedUsers: bancount가 존재하는 유저 find
+   *
+   * private findManyUsers:다수 유저 검색용 공통 로직
+   * response - ManyUsersResponseDto[]
+   */
+
+  async findAllUsers(query: UsersQueryDto) {
     const { sort, limit = 10, skip = 0 } = query;
 
     const filter = {};
@@ -25,7 +41,7 @@ export class UserQueryService {
     return await this.findManyUsers(filter, limit, skip, option);
   }
 
-  async searchUsers(query: SearchUserQueryDto) {
+  async searchUsers(query: SearchUsersQueryDto) {
     const { nickname, sort, limit = 10, skip = 0 } = query;
 
     const filter = { nickname: { $regex: nickname, $options: 'i' } }; // 대소문자 무시 검색
@@ -37,10 +53,10 @@ export class UserQueryService {
     return await this.findManyUsers(filter, limit, skip, options);
   }
 
-  async findBannedUsers(query: UserQueryDto) {
+  async findBannedUsers(query: UsersQueryDto) {
     const { sort, limit = 10, skip = 0 } = query;
 
-    const filter = { bannedCount: { $gt: 1 } };
+    const filter = { bancount: { $gt: 1 } };
 
     const options: FindOptions = {
       sortOption: sort ? { [sort]: 1 } : undefined,
@@ -49,45 +65,87 @@ export class UserQueryService {
     return await this.findManyUsers(filter, limit, skip, options);
   }
 
-  private async findManyUsers(filter: any, limit: number, skip: number, option?: FindOptions) {
-    let query = this.userModel.find(filter).select('-items -image');
+  private async findManyUsers(
+    filter: any,
+    limit: number,
+    skip: number,
+    option?: FindOptions,
+  ): Promise<ManyUsersResponseDto[]> {
+    let query = this.userModel.find(filter).select('email nickname rupa rank attendcount bancount');
 
     if (option?.sortOption) {
       query = query.sort(option.sortOption);
     }
-    return query.limit(limit).skip(skip).exec();
+
+    const users = await query.limit(limit).skip(skip).lean().exec();
+
+    return plainToInstance(ManyUsersResponseDto, users);
   }
 
-  //유저 간 조회용
-  async findUserDetails(id: string) {
-    const user = await this.userModel.findById(id).select('-items -email');
+  /** <single user>
+   * findUserByUser: 유저-유저 간 조회
+   * response - UserToUserResponseDto
+   *
+   * findUserById, findUserByEmail: by에 해당하는 필드로 유저 검색
+   * response - SingleUserResponseDto
+   *
+   * findUserDocumentById : 내부 로직용
+   */
+
+  async findUserByUser(id: string): Promise<UserToUserResponseDto> {
+    const user = await this.userModel
+      .findById(id)
+      .select('nickname rank attendcount nicknameUpdatedAt bancount image')
+      .lean()
+      .exec();
+    if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
+    return plainToInstance(UserToUserResponseDto, user);
+  }
+
+  async findUserById(id: string): Promise<SingleUserResponseDto> {
+    const user = await this.userModel.findById(id).select('-emojis').lean().exec();
+    if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
+    return plainToInstance(SingleUserResponseDto, user);
+  }
+
+  async findUserByEmail(email: string): Promise<SingleUserResponseDto> {
+    const user = await this.userModel.findOne({ email: email }).select('-emojis').lean().exec();
+    if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
+    return plainToInstance(SingleUserResponseDto, user);
+  }
+
+  async findUserDocumentById(id: string):Promise<UserDocument> {
+    const user = await this.userModel.findById(id).select('-emojis').exec();
     if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
     return user;
   }
 
-  async findUserById(id: string) {
-    const user = await this.userModel.findById(id).select('-items');
-    if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
-    return user;
-  }
-
-  async findUserByEmail(email: string) {
-    const user = await this.userModel.findOne({ email: email }).exec();
-    if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
-    return user;
-  }
-
-  async getOwnedEmojis(id: string):Promise<PopulatedEmoji[]> {
-    const user = await this.userModel.findById(id)
-      .populate({ path: 'emojis', select: 'image', }).select('emojis')
-      .exec() as unknown as UserWithPopulatedEmoji;
+  /** <User Details>
+   * getOwnedEmojis: 유저가 보유한 이모지 목록 get
+   * response-OwnedEmojiResponseDto
+   *
+   * getRankCondition: 유저 랭크업 지표 get
+   * response-RankConditionResponseDto
+   */
+  async getOwnedEmojis(id: string): Promise<OwnedEmojiResponseDto> {
+    const user = await this.userModel
+      .findById(id)
+      .populate({ path: 'emojis', select: 'image' })
+      .select('emojis')
+      .lean()
+      .exec();
 
     if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
 
-    return user.emoji;
+    const images = (user.emojis as { image?: string }[]).map((emoji) => emoji.image || '');
+
+    return {
+      _id: user._id.toString(),
+      emojis: images,
+    };
   }
 
-  async getRankCondition(user: UserDocument): Promise<GetRankConditionResDto> {
+  async getRankCondition(user: UserDocument): Promise<RankConditionResponseDto> {
     const currentRank = user.rank;
     const currentRankIndex = RANK_ORDER.indexOf(user.rank as RankType);
     const nextRank = RANK_ORDER[currentRankIndex + 1];
@@ -107,7 +165,7 @@ export class UserQueryService {
 
     const canRankUp = attendCountRequirement.isAchieved && rupaRequirement.isAchieved;
 
-    const result: GetRankConditionResDto = {
+    const result: RankConditionResponseDto = {
       currentRank,
       nextRank,
       requirements: {
@@ -119,10 +177,4 @@ export class UserQueryService {
 
     return result;
   }
-
-  /* 추후 transaction으로 이동
-  async findById(userId: string, session: ClientSession | null = null) {
-    return this.userModel.findById(userId).session(session);
-  }
-    */
 }

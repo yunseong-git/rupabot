@@ -1,9 +1,9 @@
 import { Max, Min, IsNotEmpty, IsOptional, IsIn } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class UserQueryDto {
+export class UsersQueryDto {
   @IsOptional()
-  @IsIn(['rupa', 'rank', 'createdAt', 'attendcount'])
+  @IsIn(['rupa', 'rank', 'createdAt', 'attendcount', 'bancount'])
   sort?: string;
 
   @IsOptional()
@@ -16,13 +16,9 @@ export class UserQueryDto {
   skip?: number;
 }
 
-export class SearchUserQueryDto extends UserQueryDto {
+export class SearchUsersQueryDto extends UsersQueryDto {
   @IsNotEmpty()
   @Min(2)
   nickname!: string;
 }
 
-export class UserRankQueryDto extends UserQueryDto {
-  @IsNotEmpty()
-  rank!: string;
-}

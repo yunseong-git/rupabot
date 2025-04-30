@@ -18,4 +18,4 @@ export class Emoji {
   image: string; // 이미지 경로 또는 파일명
 }
 
-export const ItemSchema = SchemaFactory.createForClass(Emoji);
+export const EmojiSchema = SchemaFactory.createForClass(Emoji);

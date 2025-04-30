@@ -4,7 +4,7 @@ export class RequirementDetail {
   isAchieved: boolean;
 }
 
-export class GetRankConditionResDto {
+export class RankConditionResponseDto {
   currentRank: string;
   nextRank: string;
   requirements: {

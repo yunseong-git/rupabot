@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type WalletDocument = Wallet & Document;
+export type RecordDocument = Record & Document;
 
 @Schema({ timestamps: true })
-export class Wallet {
+export class Record {
     @Prop({ required: true })
     userId: string; // 유저  _id (추후 관계 연동)
 
@@ -22,6 +22,6 @@ export class Wallet {
 
 }
 
-export const WalletSchema = SchemaFactory.createForClass(Wallet);
+export const RecordSchema = SchemaFactory.createForClass(Record);
 
-WalletSchema.index({ userId: 1, createdAt: -1 });
+RecordSchema.index({ userId: 1, createdAt: -1 });
