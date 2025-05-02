@@ -9,8 +9,8 @@ import { UserCommandService } from '../service/user-command.service';
 import { UpdateNicknameDto } from '../dto/req/update-user.dto';
 
 //res dto
-import { UserRankUpResponseDto, UpdateUserNicknameResponseDto } from '../dto/res/update-user-response.dto';
-import { SingleUserResponseDto, UserToUserResponseDto } from '../dto/res/user-query-response.dto';
+import { UpdateRankResponseDto, UpdateNicknameResponseDto } from '../dto/res/update-user-response.dto';
+import { SingleUserResponseDto, UserToUserResponseDto } from '../dto/res/query-user-response.dto';
 import { OwnedEmojiResponseDto } from '../dto/res/user-emoji-response.dto';
 import { RankConditionResponseDto } from '../dto/res/user-rank-response.dto';
 
@@ -34,7 +34,7 @@ export class UsersController {
   }
 
   @Patch('rank')
-  async updateRank(@User('id') id: string): Promise<UserRankUpResponseDto> {
+  async updateRank(@User('id') id: string): Promise<UpdateRankResponseDto> {
     const user = await this.userQueryService.findUserDocumentById(id);
     const condition = await this.userQueryService.getRankCondition(user);
     return await this.userCommandService.updateUserRank(user, condition);
@@ -51,7 +51,7 @@ export class UsersController {
   }
 
   @Patch('nickname')
-  async updateNickname(@User('id') id: string, @Body() dto: UpdateNicknameDto): Promise<UpdateUserNicknameResponseDto> {
+  async updateNickname(@User('id') id: string, @Body() dto: UpdateNicknameDto): Promise<UpdateNicknameResponseDto> {
     const user = await this.userQueryService.findUserDocumentById(id);
     return await this.userCommandService.updateUserNickname(user, dto.newNickname);
   }

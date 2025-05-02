@@ -4,7 +4,7 @@ import { Connection, Model, Types } from 'mongoose';
 
 import { User, UserDocument } from 'src/users/schemas/user.schema';
 import { Emoji, EmojiDocument } from 'src/shop/schemas/emoji.schema';
-import { Record, RecordDocument } from 'src/wallet/schemas/record.schema';
+import { Record, RecordDocument } from 'src/records/schemas/record.schema';
 
 import { BuyEmojiDto } from 'src/shop/emojis/dto/req/buy-emoji.dto';
 

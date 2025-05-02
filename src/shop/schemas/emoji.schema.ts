@@ -8,13 +8,13 @@ export class Emoji {
   @Prop({ required: true, unique: true })
   name: string; // 하이루파, 히잉루파 등
 
-  @Prop()
-  description: string;
-
   @Prop({ required: true })
   price: number;
 
-  @Prop()
+  @Prop({ default: 0 })
+  sellcount: number;
+
+  @Prop({ required: true })
   image: string; // 이미지 경로 또는 파일명
 }
 

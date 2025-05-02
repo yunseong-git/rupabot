@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
 //reference
-import { UsersService } from 'src/users/service/user-query.service';
+import { UserQueryService } from 'src/users/service/user-query.service';
 import { RedisService } from 'src/redis/redis.service';
 
 //dto
@@ -13,6 +13,7 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { CreateUserDto } from 'src/users/dto/req/create-user.dto';
 import { User, UserDocument } from 'src/users/schemas/user.schema';
+import { UserCommandService } from 'src/users/service/user-command.service';
 
 interface JwtPayload {
   sub: string;
@@ -22,7 +23,8 @@ interface JwtPayload {
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UsersService,
+    private readonly userQueryService: UserQueryService,
+    private readonly userCommandService: UserCommandService,
     private readonly redisService: RedisService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
@@ -42,7 +44,7 @@ export class AuthService {
       password: hashedPassword,
     };
     console.log(2);
-    await this.usersService.create(userData); //유저 생성
+    await this.userCommandService.createUser(userData); //유저 생성
 
     return true;
   }
@@ -90,11 +92,11 @@ export class AuthService {
    * sub api
    */
   async isExist(email: string, nickname: string): Promise<void> {
-    const isExistEmail = await this.usersService.findByEmail(email);
+    const isExistEmail = await this.userQueryService.findUserByEmail(email);
     if (isExistEmail) {
       throw new ConflictException('이미 존재하는 이메일입니다.');
     }
-    const isExistNickName = await this.usersService.findByNickname(nickname);
+    const isExistNickName = await this.userQueryService.findUserDocumentByNickname(nickname);
     if (isExistNickName) {
       throw new ConflictException('이미 존재하는 닉네임입니다.');
     }
@@ -107,7 +109,7 @@ export class AuthService {
   }
 
   private async validateUser(email: string, password: string): Promise<UserDocument> {
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.userQueryService.findUserDocumentByEmail(email);
     if (!user) {
       throw new UnauthorizedException('존재하지 않는 이메일입니다.');
     }
@@ -138,7 +140,7 @@ export class AuthService {
    
     return this.jwtService.signAsync(cleanedPayload, {
       secret: this.configService.get('JWT_SECRET'),
-      expiresIn: '1m',
+      expiresIn: '1h',
     });
   }
 

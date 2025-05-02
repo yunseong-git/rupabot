@@ -11,7 +11,7 @@ import { CreateUserDto } from '../dto/req/create-user.dto';
 
 //res dto
 import { RankConditionResponseDto } from '../dto/res/user-rank-response.dto';
-import { UserBanResponseDto, UpdateUserNicknameResponseDto, UserRankUpResponseDto } from '../dto/res/update-user-response.dto';
+import { BanUserResponseDto, UpdateNicknameResponseDto, UpdateRankResponseDto} from '../dto/res/update-user-response.dto';
 
 @Injectable()
 export class UserCommandService {
@@ -33,7 +33,7 @@ export class UserCommandService {
    * (de)activateUserBan: 유저 밴(해제)
    * response - UserBanResponseDto
    */
-  async updateUserNickname(user: UserDocument, newNickname: string): Promise<UpdateUserNicknameResponseDto> {
+  async updateUserNickname(user: UserDocument, newNickname: string): Promise<UpdateNicknameResponseDto> {
     await this.validateNicknameChange(user, newNickname);
 
     const nickname = user.nickname;
@@ -49,7 +49,7 @@ export class UserCommandService {
     };
   }
 
-  async updateUserRank(user: UserDocument, condition: RankConditionResponseDto): Promise<UserRankUpResponseDto> {
+  async updateUserRank(user: UserDocument, condition: RankConditionResponseDto): Promise<UpdateRankResponseDto> {
     if (!condition.canRankUp) throw new BadRequestException('랭크업이 불가능합니다.');
 
     user.rank = condition.nextRank;
@@ -62,7 +62,7 @@ export class UserCommandService {
     }
   }
 
-  async activateUserBan(user: UserDocument, bancount: number): Promise<UserBanResponseDto> {
+  async activateUserBan(user: UserDocument, bancount: number): Promise<BanUserResponseDto> {
     if (!BAN_ORDER.includes(bancount)) {
       throw new BadRequestException('명시된 일수만 정지가 가능합니다.');
     }
@@ -75,7 +75,7 @@ export class UserCommandService {
     };
   }
 
-  async deactivateUserBan(user: UserDocument): Promise<UserBanResponseDto> {
+  async deactivateUserBan(user: UserDocument): Promise<BanUserResponseDto> {
     if (user.bancount == 0) {
       throw new BadRequestException('정지되지 않은 유저입니다.');
     }

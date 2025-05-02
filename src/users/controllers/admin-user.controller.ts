@@ -7,10 +7,10 @@ import { RankGuard } from 'src/common/guards/rank.guard';
 import { UserQueryService } from '../service/user-query.service';
 import { UserCommandService } from '../service/user-command.service';
 //req dto
-import { UsersQueryDto, SearchUsersQueryDto } from '../dto/req/user-query.dto';
+import { FindAllUsersDto, SearchUsersQueryDto } from '../dto/req/query-user.dto';
 //res dto
-import { ManyUsersResponseDto, SingleUserResponseDto } from '../dto/res/user-query-response.dto';
-import { UserBanResponseDto } from '../dto/res/update-user-response.dto';
+import { ManyUsersResponseDto, SingleUserResponseDto } from '../dto/res/query-user-response.dto';
+import { BanUserResponseDto } from '../dto/res/update-user-response.dto';
 import { BanUserDto } from '../dto/req/ban-user.dto';
 
 @Controller('admin/users')
@@ -23,12 +23,12 @@ export class AdminUserController {
   ) {}
 
   @Get()
-  async getAllUsers(@Query() query: UsersQueryDto): Promise<ManyUsersResponseDto[]> {
+  async getAllUsers(@Query() query: FindAllUsersDto): Promise<ManyUsersResponseDto[]> {
     return await this.userQueryService.findAllUsers(query);
   }
 
   @Get('/ban')
-  async getBannedUsers(@Query() query: UsersQueryDto): Promise<ManyUsersResponseDto[]> {
+  async getBannedUsers(@Query() query: FindAllUsersDto): Promise<ManyUsersResponseDto[]> {
     return await this.userQueryService.findBannedUsers(query);
   }
 
@@ -48,13 +48,13 @@ export class AdminUserController {
   }
 
   @Patch('active/ban')
-  async activateUserBan(@Param('id') id: string, @Body() dto: BanUserDto): Promise<UserBanResponseDto> {
+  async activateUserBan(@Param('id') id: string, @Body() dto: BanUserDto): Promise<BanUserResponseDto> {
     const user = await this.userQueryService.findUserDocumentById(id);
     return await this.userCommandService.activateUserBan(user, dto.bancount);
   }
 
   @Patch('deactive/ban')
-  async deactivateUserBan(@Param('id') id: string): Promise<UserBanResponseDto> {
+  async deactivateUserBan(@Param('id') id: string): Promise<BanUserResponseDto> {
     const user = await this.userQueryService.findUserDocumentById(id);
     return await this.userCommandService.deactivateUserBan(user);
   }

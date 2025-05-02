@@ -1,16 +1,16 @@
-export class UpdateUserNicknameResponseDto {
+export class UpdateNicknameResponseDto {
   updatedAt: Date;
   nickname: string;
   newNickname: string;
 }
 
-export class UserBanResponseDto {
+export class BanUserResponseDto {
   nickname: string;
   bancount: number;
   updatecount: number;
 }
 
-export class UserRankUpResponseDto {
+export class UpdateRankResponseDto {
   updatedAt: Date;
   nickname: string;
   newRank: string;

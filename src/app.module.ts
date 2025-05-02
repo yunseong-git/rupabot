@@ -9,7 +9,7 @@ import * as Joi from 'joi';
 import { UsersModule } from './users/users.module';
 import { BoardModule } from './board/board.module';
 import { ShopModule } from './shop/shop.module';
-import { WalletModule } from './wallet/wallet.module';
+import { RecordModule } from './records/record.module';
 import { BattleModule } from './battle/battle.module';
 import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
@@ -38,7 +38,7 @@ import { SharedModule } from './shared/shared.Module';
     BoardModule,
     ShopModule,
     BattleModule,
-    WalletModule,
+    RecordModule,
     AuthModule,
     RedisModule,
     SharedModule,

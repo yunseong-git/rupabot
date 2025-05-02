@@ -25,8 +25,8 @@ export class ManyUsersResponseDto {
 }
 
 @Exclude()
-export class SingleUserResponseDto extends ManyUsersResponseDto{
- @Expose()
+export class SingleUserResponseDto extends ManyUsersResponseDto {
+  @Expose()
   lastAttendance: Date;
 
   @Expose()
