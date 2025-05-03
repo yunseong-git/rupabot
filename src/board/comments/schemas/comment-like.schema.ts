@@ -12,5 +12,5 @@ export class CommentLike {
     commentId: Types.ObjectId;
 }
 
-export const LikeSchema = SchemaFactory.createForClass(CommentLike);
-LikeSchema.index({ userId: 1, CommentId: 1 }, { unique: true }); // 중복 방지
+export const CommentLikeSchema = SchemaFactory.createForClass(CommentLike);
+CommentLikeSchema.index({ userId: 1, commentId: 1 }, { unique: true }); // 중복 방지

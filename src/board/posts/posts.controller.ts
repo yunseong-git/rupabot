@@ -10,8 +10,8 @@ import { CommentsService } from '../comments/comments.service';
 import { PostWithCommentsResponse } from '../types/board.types';
 
 //dto
-import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
-import { PostQueryDto, LikedPostQueryDto, SearchedPostQueryDto, DeletedPostQueryDto } from './dto/post-query.dto';
+import { CreatePostDto, UpdatePostDto } from './dto/req/post.dto';
+import { PostQueryDto, LikedPostQueryDto, SearchedPostQueryDto, DeletedPostQueryDto } from './dto/req/post-query.dto';
 
 
 @Controller('posts')
@@ -74,8 +74,9 @@ export class PostsController {
      */
 
     @Post()
-    async createPost(@Body() dto: CreatePostDto, @User('userId') userId: string): Promise<PostDocument> {
-        return await this.postsService.createPost(dto, userId);
+    async createPost(@Body() dto: CreatePostDto, @User('userId') userId: string) {
+        const post = await this.postsService.createPost(dto, userId);
+        return post.toObject;    
     }
 
     @Post(":id/like")

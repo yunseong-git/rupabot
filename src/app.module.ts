@@ -13,7 +13,7 @@ import { RecordModule } from './records/record.module';
 import { BattleModule } from './battle/battle.module';
 import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
-import { SharedModule } from './shared/shared.Module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [

@@ -4,11 +4,13 @@ import { RecordService } from './record.service';
 import { RecordController } from './record.controller';
 import { Record, RecordSchema } from './schemas/record.schema';
 import { UsersModule } from 'src/users/users.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Record.name, schema: RecordSchema }]),
-    UsersModule
+    UsersModule,
+    PassportModule,
   ],
   exports: [MongooseModule], //외부에서 mongoose모델 허용
   controllers: [RecordController],

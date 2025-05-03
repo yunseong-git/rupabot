@@ -12,12 +12,13 @@ import { CreateUserDto } from '../dto/req/create-user.dto';
 //res dto
 import { RankConditionResponseDto } from '../dto/res/user-rank-response.dto';
 import { BanUserResponseDto, UpdateNicknameResponseDto, UpdateRankResponseDto} from '../dto/res/update-user-response.dto';
+import { RegisterDto } from 'src/auth/dto/register.dto';
 
 @Injectable()
 export class UserCommandService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async createUser(dto: CreateUserDto) {
+  async createUser(dto: RegisterDto) {
     const created = new this.userModel(dto);
     return created.save();
   }

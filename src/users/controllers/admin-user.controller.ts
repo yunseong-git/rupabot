@@ -14,7 +14,7 @@ import { BanUserResponseDto } from '../dto/res/update-user-response.dto';
 import { BanUserDto } from '../dto/req/ban-user.dto';
 
 @Controller('admin/users')
-@UseGuards(AuthGuard, RankGuard)
+@UseGuards(AuthGuard(), RankGuard)
 @Rank('루파봇')
 export class AdminUserController {
   constructor(

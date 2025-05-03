@@ -20,7 +20,7 @@ export class RecordController {
     return await this.recordService.findMyRecords(userId, dto);
   }
 
-  @UseGuards(AuthGuard, RankGuard)
+  @UseGuards(AuthGuard(), RankGuard)
   @Rank('루파봇')
   @Get(':userId/admin')
   async getUserRecords(@Param('userId') userId: string, @Query() dto: RecordQueryDto): Promise<AdminRecordQueryResponseDto[]> {

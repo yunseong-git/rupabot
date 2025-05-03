@@ -27,7 +27,6 @@ export class AuthController {
   @Public()
   @Post('register')
   register(@Body() dto: RegisterDto): Promise<boolean> {
-    console.log(1);
     return this.AuthService.register(dto);
   }
 

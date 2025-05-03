@@ -6,7 +6,9 @@ import * as cookieParser from 'cookie-parser';
 import { ClassSerializerInterceptor } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await  NestFactory.create(AppModule, {
+    logger: ['log', 'error', 'warn', 'debug'], // ✅ 'debug' 추가
+  });
 
   app.use(cookieParser());
   app.enableCors({

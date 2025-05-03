@@ -6,6 +6,7 @@ import { Comment, CommentDocument } from './schemas/comment.schema';
 import { CommentLike, CommentLikeDocument } from './schemas/comment-like.schema';
 
 import { CreateCommentDto, CreateReplyCommentDto, UpdateCommentDto } from './dto/comment.dto';
+import { SingleCommentResponse } from './dto/res/comment-response.dto';
 
 @Injectable({})
 export class CommentsService {

@@ -1,31 +1,31 @@
 import { Model, Types } from 'mongoose';
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 
-import { PostLikeDocument } from 'src/board/posts/schemas/post-like.schema';
-import { PostDocument } from 'src/board/posts/schemas/post.schema';
-import { CommentDocument } from 'src/board/comments/schemas/comment.schema';
-import { CommentLikeDocument } from 'src/board/comments/schemas/comment-like.schema';
-import { UserDocument } from 'src/users/schemas/user.schema';
-import { RecordDocument } from 'src/records/schemas/record.schema';
-
+import { PostLike, PostLikeDocument } from 'src/board/posts/schemas/post-like.schema';
+import { Post, PostDocument } from 'src/board/posts/schemas/post.schema';
+import { Comment, CommentDocument } from 'src/board/comments/schemas/comment.schema';
+import { CommentLike, CommentLikeDocument } from 'src/board/comments/schemas/comment-like.schema';
+import { User, UserDocument } from 'src/users/schemas/user.schema';
+import { Record, RecordDocument } from 'src/records/schemas/record.schema';
+console.log('🔥 SoftDeleteService constructor 시작');
 // soft delete 관련 통합 서비스
 @Injectable()
 export class SoftDeleteService {
   constructor(
-    private readonly postModel: Model<PostDocument>,
-    private readonly postLikeModel: Model<PostLikeDocument>,
-    private readonly commentModel: Model<CommentDocument>,
-    private readonly commentLikeModel: Model<CommentLikeDocument>,
-    private readonly userModel: Model<UserDocument>,
-    private readonly recordModel: Model<RecordDocument>,
-  ) { }
+    @InjectModel(Post.name) private readonly postModel: Model<PostDocument>,
+    @InjectModel(PostLike.name) private readonly postLikeModel: Model<PostLikeDocument>,
+    @InjectModel(Comment.name) private readonly commentModel: Model<CommentDocument>,
+    @InjectModel(CommentLike.name) private readonly commentLikeModel: Model<CommentLikeDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(Record.name) private readonly recordModel: Model<RecordDocument>,
+  ) {}
 
   // Post 삭제 (Post + 연관 Comment들 soft delete)
   async softDeletePost(postId: string) {
-
     //1. post에 달린 comment ids 추출
     const comments = await this.commentModel.find({ postId }).select('_id').lean();
-    const commentIds = comments.map(c => c._id);
+    const commentIds = comments.map((c) => c._id);
 
     //2. Post 및 하위 comment에 달린 좋아요들 hard delete
     await this.commentLikeModel.deleteMany({ commentId: { $in: commentIds } });

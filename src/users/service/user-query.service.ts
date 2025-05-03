@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../schemas/user.schema';
 import { Model } from 'mongoose';
@@ -18,7 +18,7 @@ import { OwnedEmojiResponseDto } from '../dto/res/user-emoji-response.dto';
 
 @Injectable()
 export class UserQueryService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   /** <many users>
    * findAllUsers: 모든 유저 find(sorting 선택)
@@ -32,7 +32,7 @@ export class UserQueryService {
   async findAllUsers(dto: FindAllUsersDto): Promise<ManyUsersResponseDto[]> {
     const { sort, limit = 10, skip = 0 } = dto;
     const filter = {};
-    const option: QueryOptions = { sort, limit, skip }
+    const option: QueryOptions = { sort, limit, skip };
 
     return await this.findManyUsers(filter, option);
   }
@@ -40,7 +40,7 @@ export class UserQueryService {
   async searchUsers(dto: SearchUsersQueryDto): Promise<ManyUsersResponseDto[]> {
     const { nickname, limit = 10, skip = 0 } = dto;
     const filter = { nickname: { $regex: nickname, $options: 'i' } };
-    const option: QueryOptions = { limit, skip }
+    const option: QueryOptions = { limit, skip };
 
     return await this.findManyUsers(filter, option);
   }
@@ -48,12 +48,12 @@ export class UserQueryService {
   async findBannedUsers(dto: FindAllUsersDto): Promise<ManyUsersResponseDto[]> {
     const { sort, limit = 10, skip = 0 } = dto;
     const filter = { bancount: { $gt: 1 } };
-    const option: QueryOptions = { sort, limit, skip }
+    const option: QueryOptions = { sort, limit, skip };
 
     return await this.findManyUsers(filter, option);
   }
 
-  private async findManyUsers(filter: any, option: QueryOptions,): Promise<ManyUsersResponseDto[]> {
+  private async findManyUsers(filter: any, option: QueryOptions): Promise<ManyUsersResponseDto[]> {
     let query = this.userModel.find(filter).select('email nickname rupa rank attendcount bancount');
     query = applyPagination(query, option);
     const users = await query.lean().exec();
@@ -72,9 +72,11 @@ export class UserQueryService {
    */
 
   async findUserByUser(id: string): Promise<UserToUserResponseDto> {
-    const user = await this.userModel.findById(id)
+    const user = await this.userModel
+      .findById(id)
       .select('nickname rank attendcount nicknameUpdatedAt bancount image')
-      .lean().exec();
+      .lean()
+      .exec();
     if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
     return plainToInstance(UserToUserResponseDto, user, { excludeExtraneousValues: true });
   }
@@ -91,8 +93,6 @@ export class UserQueryService {
     return plainToInstance(SingleUserResponseDto, user, { excludeExtraneousValues: true });
   }
 
- 
-
   /** <User Details>
    * getOwnedEmojis: 유저가 보유한 이모지 목록 get
    * response-OwnedEmojiResponseDto
@@ -101,10 +101,12 @@ export class UserQueryService {
    * response-RankConditionResponseDto
    */
   async getOwnedEmojis(id: string): Promise<OwnedEmojiResponseDto> {
-    const user = await this.userModel.findById(id)
+    const user = await this.userModel
+      .findById(id)
       .populate({ path: 'emojis', select: 'image' })
       .select('emojis')
-      .lean().exec();
+      .lean()
+      .exec();
 
     if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
 
@@ -149,11 +151,11 @@ export class UserQueryService {
     return result;
   }
 
-   /** <single user document>
+  /** <single user document>
    * findUserDocumentById(ByEmail, ByNickname) : 내부 로직용
    */
-  
-   async findUserDocumentByEmail(email: string): Promise<UserDocument> {
+
+  async findUserDocumentByEmail(email: string): Promise<UserDocument> {
     const user = await this.userModel.findOne({ email: email }).select('-emojis').exec();
     if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
     return user;
@@ -167,6 +169,23 @@ export class UserQueryService {
 
   async findUserDocumentById(id: string): Promise<UserDocument> {
     const user = await this.userModel.findById(id).select('-emojis').exec();
+    if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
+    return user;
+  }
+
+  async isExist(email: string, nickname: string): Promise<void> {
+    const isExistEmail = await this.userModel.findOne({ email: email }).exec();
+    if (isExistEmail) {
+      throw new ConflictException('이미 존재하는 이메일입니다.');
+    }
+    const isExistNickName = await this.userModel.findOne({ nickname: nickname }).exec();
+    if (isExistNickName) {
+      throw new ConflictException('이미 존재하는 닉네임입니다.');
+    }
+  }
+
+  async findPassword(email: string): Promise<UserDocument> {
+    const user = await this.userModel.findOne({ email }).select('+password').exec();
     if (!user) throw new NotFoundException('유저를 찾을 수 없습니다');
     return user;
   }

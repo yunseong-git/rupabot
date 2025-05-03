@@ -34,7 +34,7 @@ export class AuthService {
    * main api
    */
   async register(dto: RegisterDto): Promise<boolean> {
-    await this.isExist(dto.email, dto.nickname); //중복확인
+    await this.userQueryService.isExist(dto.email, dto.nickname); //중복확인
     const hashedPassword = await this.hashingPassword(dto.password); //비밀번호 암호화
 
     //userData 재가공
@@ -109,7 +109,7 @@ export class AuthService {
   }
 
   private async validateUser(email: string, password: string): Promise<UserDocument> {
-    const user = await this.userQueryService.findUserDocumentByEmail(email);
+    const user = await this.userQueryService.findPassword(email)
     if (!user) {
       throw new UnauthorizedException('존재하지 않는 이메일입니다.');
     }

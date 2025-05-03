@@ -12,5 +12,6 @@ export class PostLike {
   postId: Types.ObjectId;
 }
 
-export const LikeSchema = SchemaFactory.createForClass(PostLike);
-LikeSchema.index({ userId: 1, postId: 1 }, { unique: true }); // 중복 방지
+export const PostLikeSchema = SchemaFactory.createForClass(PostLike);
+
+PostLikeSchema.index({ userId: 1, postId: 1 }, { unique: true }); // 중복 방지

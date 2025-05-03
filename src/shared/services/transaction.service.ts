@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException  } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model, Types } from 'mongoose';
 
@@ -6,9 +6,10 @@ import { User, UserDocument } from 'src/users/schemas/user.schema';
 import { Emoji, EmojiDocument } from 'src/shop/schemas/emoji.schema';
 import { Record, RecordDocument } from 'src/records/schemas/record.schema';
 
+import { RecordType } from 'src/records/schemas/record.schema';
 import { BuyEmojiDto } from 'src/shop/emojis/dto/req/buy-emoji.dto';
-
-// soft delete 관련 통합 서비스
+console.log('🔥 TransactionService constructor 시작');
+// transaction 통합서비스
 @Injectable()
 export class TransactionService {
   constructor(
@@ -39,13 +40,18 @@ export class TransactionService {
       await user.save({ session });
 
       // 구매 기록 생성
-      await this.recordModel.create([{
-        user: user.id,
-        emoji: emoji.id,
-        price: emoji.price,
-        type: '구매',
-        createdAt: new Date(),
-      }], { session });
+      await this.recordModel.create(
+        [
+          {
+            userId: user._id, // ✅ 필드명 일치
+            type: RecordType.Purchase, // ✅ RecordType enum 사용 (string도 OK)
+            content: emoji.name, // ✅ content 필드로 대체
+            price: emoji.price,
+            left: user.rupa,
+          },
+        ],
+        { session },
+      );
 
       await session.commitTransaction();
       return { message: '이모지를 성공적으로 구매했습니다.' };

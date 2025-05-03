@@ -8,8 +8,8 @@ import { Post, PostDocument } from './schemas/post.schema';
 import { PostLike, PostLikeDocument } from './schemas/post-like.schema';
 
 //dto
-import { PostQueryDto, LikedPostQueryDto, SearchedPostQueryDto, DeletedPostQueryDto } from './dto/post-query.dto';
-import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
+import { PostQueryDto, LikedPostQueryDto, SearchedPostQueryDto, DeletedPostQueryDto } from './dto/req/post-query.dto';
+import { CreatePostDto, UpdatePostDto } from './dto/req/post.dto';
 
 type FindOptions = {
   sortOption?: Record<string, SortOrder>;
