@@ -11,7 +11,7 @@ import { Emoji, EmojiSchema } from 'src/shop/schemas/emoji.schema';
 
 import { SoftDeleteService } from './services/soft-delete.service';
 import { TransactionService } from './services/transaction.service';
-console.log('✅ PostLike.name =', PostLike.name);
+
 @Module({
   imports: [
     MongooseModule.forFeature([

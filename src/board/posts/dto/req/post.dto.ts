@@ -11,7 +11,13 @@ export class CreatePostDto {
   @IsNotEmpty()
   @MaxLength(300)
   content!: string;
+
+  tag: string;
+
+
 }
 
 //create와 동일, @IsOptional()만 추가
-export class UpdatePostDto extends PartialType(CreatePostDto) {}
+export class UpdatePostDto extends PartialType(CreatePostDto) {
+  
+}

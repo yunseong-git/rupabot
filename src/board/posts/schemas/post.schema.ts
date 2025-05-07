@@ -17,8 +17,8 @@ export class Post {
   @Prop({ enum: ['free', 'cs'], default: 'free' })
   type: 'free' | 'cs'; //게시판 종류
 
-  @Prop({ type: [String], default: [] })
-  tag: string[]; // 태그 ex) #nest, #mongoDB
+  @Prop({ default: '잡담' })
+  tag: string; // 태그 ex) #nest, #mongoDB
 
   @Prop({ type: [String], default: [] })
   images: string[]; // 이미지 경로들
@@ -33,7 +33,7 @@ export class Post {
   isDeleted: boolean;
 
   @Prop({ type: Types.ObjectId, ref: 'Comment' })
-  bestComment?: Types.ObjectId;
+  fixedComment?: Types.ObjectId;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

@@ -1,38 +1,56 @@
 import { Exclude, Expose } from 'class-transformer';
-import { CommentResponse } from 'src/board/types/board.types';
 
 export type UserTag = {
   nickname: string;
+  rank: string;
 };
 
 @Exclude()
 export class SinglePostResponseDto {
   @Expose()
-  UserTag: UserTag;
+  userTag: UserTag;
+
+  @Expose()
+  tag: string;
+
+  @Expose()
+  title: string;
 
   @Expose()
   content: string;
 
   @Expose()
-  price: number;
+  images: string[];
 
   @Expose()
-  comments: CommentResponse;
+  createdAt: Date;
+
+  @Expose()
+  updatedAt: Date;
+
+  @Expose()
+  viewcount: number;
+
+  @Expose()
+  likecount: number;
 }
 
-@Exclude()
 export class ManyPostsResponseDto {
   @Expose()
-  type: 'free' | 'cs';
+  userTag: UserTag;
 
   @Expose()
-  tag: string[]
-
-  @Expose()
-  UserTag: UserTag;
+  tag: string;
 
   @Expose()
   title: string;
 
-  createdAt: Date
+  @Expose()
+  createdAt: Date;
+
+  @Expose()
+  viewcount: number;
+
+  @Expose()
+  likecount: number;
 }
