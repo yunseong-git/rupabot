@@ -1,21 +1,13 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import Redis from 'ioredis';
-import type { Redis as RedisClient } from 'ioredis';
 
 @Injectable()
-export class RedisService implements OnModuleInit {
-  private client: RedisClient;
+export class RedisService {
+  constructor(@Inject('REDIS_CLIENT') private readonly client: Redis) { }
 
-  onModuleInit() {
-    this.client = new Redis(); // 기본 localhost:6379 연결
-  }
-
-  async set(key: string, value: string, ttlSeconds?: number) {
-    if (ttlSeconds) {
-      await this.client.set(key, value, 'EX', ttlSeconds); // TTL 설정
-    } else {
-      await this.client.set(key, value);
-    }
+  async set(key: string, value: string, ttl?: number) {
+    if (ttl) await this.client.set(key, value, 'EX', ttl); // TTL 설정
+    else await this.client.set(key, value);
   }
 
   async get(key: string) {
@@ -24,5 +16,13 @@ export class RedisService implements OnModuleInit {
 
   async del(key: string) {
     return await this.client.del(key);
+  }
+
+  async pushToQueue(queue: string, value: string) {
+    return this.client.rpush(queue, value);
+  }
+
+  async popFromQueue(queue: string) {
+    return this.client.lpop(queue);
   }
 }

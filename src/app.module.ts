@@ -15,8 +15,21 @@ import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
 import { SharedModule } from './shared/shared.module';
 
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { PagesModule } from './pages/pages.module';
+
 @Module({
   imports: [
+    ServeStaticModule.forRoot(
+      { rootPath: join(__dirname, '..', 'front', 'src', 'css'), serveRoot: '/css', },
+  ),
+      ServeStaticModule.forRoot(
+      { rootPath: join(__dirname, '..', 'front', 'src', 'scripts'), serveRoot: '/scripts', },
+  ),
+      ServeStaticModule.forRoot(
+      { rootPath: join(__dirname, '..', 'front', 'asset'), serveRoot: '/asset', },
+  ),
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -42,8 +55,9 @@ import { SharedModule } from './shared/shared.module';
     AuthModule,
     RedisModule,
     SharedModule,
+    PagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

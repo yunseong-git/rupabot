@@ -11,18 +11,16 @@ import { EmojiQueryDto, EmojiSearchDto } from './dto/req/query-emoji.dto';
 import { EmojisResponseDto } from './dto/res/query-emoji-response.dto';
 import { CreateEmojiResponseDto } from './dto/res/create-emoji-response.dto';
 
-import { TransactionService } from 'src/shared/services/transaction.service';
 
 @Controller('emojis')
 export class EmojiController {
   constructor(
     private readonly emojiService: EmojiService,
-    private readonly transactionService: TransactionService,
   ) { }
 
   @Post('buy')
   async buyEmoji(@Body() dto: BuyEmojiDto, @User() userId: string) {
-    return await this.transactionService.buyEmoji(dto, userId);
+    //return await this.transactionService.buyEmoji(dto, userId);
   }
 
   @Get()

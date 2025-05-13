@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 
 //data
 import { InjectModel } from '@nestjs/mongoose';
@@ -8,57 +8,53 @@ import { Post, PostDocument } from '../schemas/post.schema';
 import { PostLike, PostLikeDocument } from '../schemas/post-like.schema';
 
 //dto
-import { PostQueryDto, LikedPostQueryDto, SearchedPostQueryDto, DeletedPostQueryDto } from '../dto/req/post-query.dto';
-import { CreatePostDto, UpdatePostDto } from '../dto/req/post.dto';
+import { PostCommandDTO } from '../dto/req/post-command.dto';
 
 @Injectable()
 export class PostCommandService {
   constructor(
     @InjectModel(Post.name) private readonly postModel: Model<PostDocument>,
     @InjectModel(PostLike.name) private readonly postLikeModel: Model<PostLikeDocument>,
-  ) {}
+  ) { }
 
   /**게시물 좋아요 동작*/
   async postLike(postId: string, userId: string): Promise<'liked' | 'unliked'> {
     const isLiked = await this.postLikeModel.exists({ postId, userId });
 
     if (!isLiked) {
-      return this.createLike(postId, userId);
+      return await this.createLike(postId, userId);
     } else {
-      return this.deleteLike(postId, userId);
+      return await this.deleteLike(postId, userId);
     }
   }
 
   /**게시물 작성*/
-  async createPost(dto: CreatePostDto, userId: string): Promise<PostDocument> {
+  async createPost(dto: PostCommandDTO.Create, userId: string): Promise<string> {
     const created = new this.postModel({
       ...dto,
       authorId: userId,
     });
-    return created.save();
+    await created.save();
+
+    return created.id.toString();
   }
 
-  async updatePost(dto: UpdatePostDto, postId: string): Promise<PostDocument> {
-    const updated = await this.postModel.findByIdAndUpdate(postId, dto, { new: true });
-    if (!updated) throw new NotFoundException('업데이트 실패');
+  /**게시물 업데이트*/
+  async updatePost(dto: PostCommandDTO.Update, postId: string): Promise<boolean> {
+    const result = await this.postModel.updateOne({ _id: postId }, { $set: dto }, { runValidators: true, timestamps: true });
+    if (result.matchedCount === 0) throw new NotFoundException('해당 게시물 없음');
+    if (result.modifiedCount === 0) throw new BadRequestException('변경 된 내용 없음');
 
-    return updated;
+    return true;
   }
 
-  async deleltePost(dto: UpdatePostDto, postId: string): Promise<PostDocument> {
-    //1. post에 달린 comment ids 추출
-    const comments = await this.commentModel.find({ postId }).select('_id').lean();
-    const commentIds = comments.map((c) => c._id);
-
-    //2. Post 및 하위 comment에 달린 좋아요들 hard delete
-    await this.commentLikeModel.deleteMany({ commentId: { $in: commentIds } });
-    await this.postLikeModel.deleteMany({ postId });
-
-    //3. Post에 달린 모든 comments soft delete
-    await this.commentModel.updateMany({ postId }, { $set: { isDeleted: true } });
-
-    //4. Post soft delete
-    await this.postModel.updateOne({ _id: postId }, { $set: { isDeleted: true } });
+  /**게시물 및 게시물 좋아요 삭제*/
+  async selfDeletePost(postId: string, deletedAt: Date, deletedBy: string): Promise<boolean> {
+    await Promise.all([
+      this.postModel.updateOne({ _id: postId }, { $set: { isDeleted: true, likecount: 0, deletedAt: deletedAt, deletedBy: deletedBy } }),
+      this.postLikeModel.deleteMany({ postId })
+    ]);
+    return true;
   }
 
   /**<내부 로직용>게시물 좋아요 생성*/

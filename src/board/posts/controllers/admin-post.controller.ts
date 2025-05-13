@@ -6,24 +6,20 @@ import { User } from 'src/common/decorators/user.decorator';
 import { PostDocument } from '../schemas/post.schema';
 import { PostCommandService } from '../services/post-command.service';
 import { PostQueryService } from '../services/post-query.service';
-import { SoftDeleteService } from 'src/shared/services/soft-delete.service';
-import { CommentsService } from '../../comments/comments.service';
-import { PostWithCommentsResponse } from '../../types/board.types';
+
 
 //dto
-import { CreatePostDto, UpdatePostDto } from '../dto/req/post.dto';
-import { PostQueryDto, LikedPostQueryDto, SearchedPostQueryDto, DeletedPostQueryDto } from '../dto/req/post-query.dto';
+import { PostCommandDTO } from '../dto/req/post-command.dto';
+import { PostQueryDto } from '../dto/req/post-query.dto';
+import { CommentQueryService } from 'src/board/comments/services/comment-query.service';
+import { CommentCommandService } from 'src/board/comments/services/comment-command.service';
 
 @Controller('admin-posts')
 export class AdminPostController {
   constructor(
     private readonly postQueryService: PostQueryService,
-    private readonly commentsService: CommentsService,
-    private readonly softDeleteService: SoftDeleteService,
-  ) {}
-
-  @Get('deleted')
-  async getDeletedPost(@Query() query: DeletedPostQueryDto): Promise<ManyPostsResponseDto[]>  {
-    return await this.postQueryService.findDeletedPosts(query);
-  }
+    private readonly postCommandService: PostCommandService,
+    private readonly commentQueryService: CommentQueryService,
+    private readonly commentCommandService: CommentCommandService,
+  ) { }
 }

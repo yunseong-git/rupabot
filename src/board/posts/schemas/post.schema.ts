@@ -32,8 +32,17 @@ export class Post {
   @Prop({ default: 0 })
   isDeleted: boolean;
 
-  @Prop({ type: Types.ObjectId, ref: 'Comment' })
+  @Prop({ default: 0 })
+  deletedAt: Date;
+
+  @Prop({ default: null, enum: [null, '작성자', '관리자'] })
+  deletedBy: string;
+
+  @Prop({ default: null, type: Types.ObjectId, ref: 'Comment' })
   fixedComment?: Types.ObjectId;
+
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

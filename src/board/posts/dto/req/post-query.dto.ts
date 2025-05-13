@@ -1,34 +1,33 @@
 import { IsOptional, IsIn, IsNotEmpty } from 'class-validator';
-import { Type } from 'class-transformer';
+import { QueryBaseDto } from 'src/common/dto/query-base.dto';
 
-export class BaseQueryDto {
-    @IsOptional()
-    @IsIn(['cs', 'free'])
-    type?: string;
 
-    @IsOptional()
-    @Type(() => Number)
-    limit?: number;
+export namespace PostQueryDto {
+    class Based extends QueryBaseDto {
+        @IsOptional()
+        @IsIn(['cs', 'free'])
+        type?: string;
+    }
+    export class Liked extends Based { }
+    export class All extends Based {
+        @IsOptional()
+        @IsIn(['latest', 'like'])
+        sort?: string;
+    }
+    export class Search extends All {
+        @IsNotEmpty()
+        word!: string;
+    }
+    export class Deleted extends All {
+        @IsOptional()
+        word?: string;
+    }
+    export class WithComments extends QueryBaseDto {
+        @IsNotEmpty()
+        postId: string
 
-    @IsOptional()
-    @Type(() => Number)
-    skip?: number;
-}
-
-export class PostQueryDto extends BaseQueryDto {
-    @IsOptional()
-    @IsIn(['latest', 'like'])
-    sort?: string;
-}
-
-export class LikedPostQueryDto extends BaseQueryDto { }
-
-export class SearchedPostQueryDto extends BaseQueryDto {
-    @IsNotEmpty()
-    word!: string;
-}
-
-export class DeletedPostQueryDto extends BaseQueryDto {
-    @IsOptional()
-    word?: string;
+        @IsOptional()
+        @IsIn(['latest', 'like'])
+        sort?: string;
+    }
 }

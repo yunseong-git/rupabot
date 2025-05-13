@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
 //data
 import { QueryOptions, applyPagination } from 'src/common/utils/pagination.utill';
 import { InjectModel } from '@nestjs/mongoose';
@@ -7,9 +6,8 @@ import { Model, Types } from 'mongoose';
 import { Post, PostDocument } from '../schemas/post.schema';
 import { PostLike, PostLikeDocument } from '../schemas/post-like.schema';
 //dto
-import { PostQueryDto, LikedPostQueryDto, SearchedPostQueryDto, DeletedPostQueryDto } from '../dto/req/post-query.dto';
-import { ManyPostsResponseDto, SinglePostResponseDto } from '../dto/res/post-query-response.dto';
-import { User, UserDocument } from 'src/users/schemas/user.schema';
+import { PostQueryDto } from '../dto/req/post-query.dto';
+
 import { BoardUtilService } from '../board-utill.service';
 import { UserTag } from '../dto/res/post-query-response.dto';
 
@@ -19,8 +17,7 @@ export class PostQueryService {
     private readonly boardUtillService: BoardUtilService,
     @InjectModel(Post.name) private readonly postModel: Model<PostDocument>,
     @InjectModel(PostLike.name) private readonly postLikeModel: Model<PostLikeDocument>,
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-  ) {}
+  ) { }
 
   /** 단일 게시물 조회 */
   async findPostbyId(id: string): Promise<Post & { userTag: UserTag }> {
@@ -35,7 +32,7 @@ export class PostQueryService {
   }
 
   /** 모든 게시물 조회 */
-  async findAllPosts(query: PostQueryDto): Promise<(Post & { userTag: UserTag })[]> {
+  async findAllPosts(query: PostQueryDto.All): Promise<(Post & { userTag: UserTag })[]> {
     const { type, sort, limit = 10, skip = 0 } = query;
     const filter = { type, isDeleted: false };
     const options: QueryOptions = { sort, limit, skip };
@@ -44,7 +41,7 @@ export class PostQueryService {
   }
 
   /** 게시물 검색 결과 조회(포함여부, 대소문자 구분없음) */
-  async findSearchedPosts(query: SearchedPostQueryDto): Promise<(Post & { userTag: UserTag })[]> {
+  async findSearchedPosts(query: PostQueryDto.Search): Promise<(Post & { userTag: UserTag })[]> {
     const { type, word, limit = 10, skip = 0 } = query;
     const filter = { title: { $regex: word, $options: 'i' }, type, isDeleted: false };
     const options: QueryOptions = { limit, skip };
@@ -53,7 +50,7 @@ export class PostQueryService {
   }
 
   /** <for admin>삭제된 게시물들 조회 */
-  async findDeletedPosts(query: DeletedPostQueryDto): Promise<(Post & { userTag: UserTag })[]> {
+  async findDeletedPosts(query: PostQueryDto.Deleted): Promise<(Post & { userTag: UserTag })[]> {
     const { type, word, limit = 10, skip = 0 } = query;
     const filter = { title: { $regex: word, $options: 'i' }, type, isDeleted: false };
     const options: QueryOptions = { limit, skip };
@@ -64,8 +61,9 @@ export class PostQueryService {
     }
     return posts;
   }
+
   /** 유저가 좋아요 누른 게시물들 조회 */
-  async findLikedPosts(query: LikedPostQueryDto, userId: string): Promise<(Post & { userTag: UserTag })[]> {
+  async findLikedPosts(query: PostQueryDto.Liked, userId: string): Promise<(Post & { userTag: UserTag })[]> {
     const ids = await this.findLikedPostsIds(userId);
 
     const { type, limit = 10, skip = 0 } = query;

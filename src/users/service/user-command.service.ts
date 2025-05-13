@@ -11,14 +11,14 @@ import { CreateUserDto } from '../dto/req/create-user.dto';
 
 //res dto
 import { RankConditionResponseDto } from '../dto/res/user-rank-response.dto';
-import { BanUserResponseDto, UpdateNicknameResponseDto, UpdateRankResponseDto} from '../dto/res/update-user-response.dto';
-import { RegisterDto } from 'src/auth/dto/register.dto';
+import { BanUserResponseDto, UpdateNicknameResponseDto, UpdateRankResponseDto } from '../dto/res/update-user-response.dto';
+import { RegisterDto } from 'src/auth/dto/auth-request.dto';
 
 @Injectable()
 export class UserCommandService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
 
-  async createUser(dto: RegisterDto) {
+  async createUser(dto: CreateUserDto) {
     const created = new this.userModel(dto);
     return created.save();
   }

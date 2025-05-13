@@ -21,7 +21,19 @@ export class Comment {
   likecount: number;
 
   @Prop({ default: false })
+  isUpdated: boolean;
+
+  @Prop({ default: false, select: false })
   isDeleted: boolean;
+
+  @Prop({ default: null, enum: [null, '작성자', '관리자', '게시물'] })
+  deletedBy: string;
+
+  @Prop({ default: null })
+  deletedAt: Date;
+
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

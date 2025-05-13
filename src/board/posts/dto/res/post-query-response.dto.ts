@@ -1,56 +1,48 @@
 import { Exclude, Expose } from 'class-transformer';
+import { CommentQueryResponseDto } from 'src/board/comments/dto/res/comment-query-response.dto';
 
 export type UserTag = {
   nickname: string;
   rank: string;
 };
 
-@Exclude()
-export class SinglePostResponseDto {
-  @Expose()
-  userTag: UserTag;
+export namespace PostQueryResponseDto {
+  @Exclude()
+  export class Many {
+    @Expose()
+    userTag: UserTag;
 
-  @Expose()
-  tag: string;
+    @Expose()
+    tag: string;
 
-  @Expose()
-  title: string;
+    @Expose()
+    title: string;
 
-  @Expose()
-  content: string;
+    @Expose()
+    createdAt: Date;
 
-  @Expose()
-  images: string[];
+    @Expose()
+    viewcount: number;
 
-  @Expose()
-  createdAt: Date;
+    @Expose()
+    likecount: number;
+  }
+  export class Single extends Many {
+    @Expose()
+    content: string;
 
-  @Expose()
-  updatedAt: Date;
+    @Expose()
+    images: string[];
 
-  @Expose()
-  viewcount: number;
+    @Expose()
+    updatedAt: Date;
+  }
 
-  @Expose()
-  likecount: number;
-}
+  export class WithComments {
+    @Expose()
+    post: Single;
 
-export class ManyPostsResponseDto {
-  @Expose()
-  userTag: UserTag;
-
-  @Expose()
-  tag: string;
-
-  @Expose()
-  title: string;
-
-  @Expose()
-  createdAt: Date;
-
-  @Expose()
-  viewcount: number;
-
-  @Expose()
-  likecount: number;
+    @Expose()
+    comments: CommentQueryResponseDto.NotPid[];
+  }
 }
