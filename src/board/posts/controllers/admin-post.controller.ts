@@ -9,8 +9,6 @@ import { PostQueryService } from '../services/post-query.service';
 
 
 //dto
-import { PostCommandDTO } from '../dto/req/post-command.dto';
-import { PostQueryDto } from '../dto/req/post-query.dto';
 import { CommentQueryService } from 'src/board/comments/services/comment-query.service';
 import { CommentCommandService } from 'src/board/comments/services/comment-command.service';
 
