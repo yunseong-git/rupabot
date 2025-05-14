@@ -1,0 +1,1227 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/users/my": {
+      "get": {
+        "operationId": "UsersController_getMyInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/rank-condition": {
+      "get": {
+        "operationId": "UsersController_getRankCondition",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/rank": {
+      "patch": {
+        "operationId": "UsersController_updateRank",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "operationId": "UsersController_getOtherUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/item": {
+      "get": {
+        "operationId": "UsersController_getUserEmojis",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/nickname": {
+      "patch": {
+        "operationId": "UsersController_updateNickname",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNicknameDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "operationId": "AdminUserController_getAllUsers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AdminUser"
+        ]
+      }
+    },
+    "/admin/users/ban": {
+      "get": {
+        "operationId": "AdminUserController_getBannedUsers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AdminUser"
+        ]
+      }
+    },
+    "/admin/users/search": {
+      "get": {
+        "operationId": "AdminUserController_searchUsers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AdminUser"
+        ]
+      }
+    },
+    "/admin/users/{id}/byId": {
+      "get": {
+        "operationId": "AdminUserController_getUsersById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AdminUser"
+        ]
+      }
+    },
+    "/admin/users/{email}/byEmail": {
+      "get": {
+        "operationId": "AdminUserController_getUsersByEmail",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AdminUser"
+        ]
+      }
+    },
+    "/admin/users/active/ban": {
+      "patch": {
+        "operationId": "AdminUserController_activateUserBan",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BanUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AdminUser"
+        ]
+      }
+    },
+    "/admin/users/deactive/ban": {
+      "patch": {
+        "operationId": "AdminUserController_deactivateUserBan",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AdminUser"
+        ]
+      }
+    },
+    "/posts": {
+      "get": {
+        "operationId": "PostController_getAllPosts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "전체 게시물 목록",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Many"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "전체 게시물 조회",
+        "tags": [
+          "Post"
+        ]
+      },
+      "post": {
+        "operationId": "PostController_createPost",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "게시물 작성 완료",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Simple"
+                }
+              }
+            }
+          }
+        },
+        "summary": "게시물 작성",
+        "tags": [
+          "Post"
+        ]
+      }
+    },
+    "/posts/{id}/only-post": {
+      "get": {
+        "operationId": "PostController_getSinglePost",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "게시물 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "단일 게시물 데이터",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Single"
+                }
+              }
+            }
+          }
+        },
+        "summary": "단일 게시물 조회",
+        "tags": [
+          "Post"
+        ]
+      }
+    },
+    "/posts/with-comments": {
+      "get": {
+        "operationId": "PostController_getPostWithComments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "게시물 및 댓글",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithComments"
+                }
+              }
+            }
+          }
+        },
+        "summary": "게시물 + 부모 댓글 조회",
+        "tags": [
+          "Post"
+        ]
+      }
+    },
+    "/posts/my": {
+      "get": {
+        "operationId": "PostController_getLikedPost",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "좋아요 누른 게시물 목록",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Many"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "내가 좋아요 누른 게시물 조회",
+        "tags": [
+          "Post"
+        ]
+      }
+    },
+    "/posts/search": {
+      "get": {
+        "operationId": "PostController_getSearchedPost",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "검색 결과",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Many"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "게시물 검색",
+        "tags": [
+          "Post"
+        ]
+      }
+    },
+    "/posts/{id}/like": {
+      "post": {
+        "operationId": "PostController_postLike",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "게시물 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "좋아요 반영 결과",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Like"
+                }
+              }
+            }
+          }
+        },
+        "summary": "게시물 좋아요/취소 토글",
+        "tags": [
+          "Post"
+        ]
+      }
+    },
+    "/posts/{postId}": {
+      "patch": {
+        "operationId": "PostController_updatePost",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "게시물 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Update"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "게시물 수정 완료",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Update"
+                }
+              }
+            }
+          }
+        },
+        "summary": "게시물 수정",
+        "tags": [
+          "Post"
+        ]
+      },
+      "delete": {
+        "operationId": "PostController_deletePost",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "게시물 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "게시물 및 관련 댓글/좋아요 삭제 완료"
+          }
+        },
+        "summary": "게시물 삭제 (관련 댓글, 좋아요 포함)",
+        "tags": [
+          "Post"
+        ]
+      }
+    },
+    "/comments/{id}": {
+      "get": {
+        "operationId": "CommentController_getComment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Comment"
+        ]
+      }
+    },
+    "/comments/all/by-Post": {
+      "get": {
+        "operationId": "CommentController_getAllCommentsByPost",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Comment"
+        ]
+      }
+    },
+    "/comments/parents/by-Post": {
+      "get": {
+        "operationId": "CommentController_getParentsCommentsByPost",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Comment"
+        ]
+      }
+    },
+    "/comments/reply": {
+      "get": {
+        "operationId": "CommentController_getReplyCommentsByParent",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Comment"
+        ]
+      },
+      "post": {
+        "operationId": "CommentController_createReplyComment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReply"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Comment"
+        ]
+      }
+    },
+    "/comments/my": {
+      "get": {
+        "operationId": "CommentController_getMyComments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Comment"
+        ]
+      }
+    },
+    "/comments": {
+      "post": {
+        "operationId": "CommentController_createComment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Comment"
+        ]
+      },
+      "patch": {
+        "operationId": "CommentController_updateComment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Update"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Comment"
+        ]
+      },
+      "delete": {
+        "operationId": "CommentController_deleteComment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Comment"
+        ]
+      }
+    },
+    "/comments/like": {
+      "post": {
+        "operationId": "CommentController_commentLike",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Comment"
+        ]
+      }
+    },
+    "/emojis/buy": {
+      "post": {
+        "operationId": "EmojiController_buyEmoji",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BuyEmojiDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Emoji"
+        ]
+      }
+    },
+    "/emojis": {
+      "get": {
+        "operationId": "EmojiController_getAllEmojis",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Emoji"
+        ]
+      },
+      "post": {
+        "operationId": "EmojiController_createEmoji",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEmojiDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Emoji"
+        ]
+      }
+    },
+    "/emojis/search": {
+      "get": {
+        "operationId": "EmojiController_searchEmojis",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Emoji"
+        ]
+      }
+    },
+    "/emojis/{id}": {
+      "get": {
+        "operationId": "EmojiController_getEmojiDetail",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Emoji"
+        ]
+      }
+    },
+    "/record": {
+      "get": {
+        "operationId": "RecordController_getMyRecords",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Record"
+        ]
+      }
+    },
+    "/record/{userId}/admin": {
+      "get": {
+        "operationId": "RecordController_getUserRecords",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Record"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "accessToken은 본문으로, refreshToken은 HttpOnly 쿠키로 전송",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "로그인",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "refreshToken 쿠키를 통해 accessToken 재발급",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "summary": "Access Token 재발급",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "회원가입 성공 여부 (true/false)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "summary": "회원가입",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "로그아웃 성공 여부",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "summary": "로그아웃 (refreshToken 쿠키 삭제)",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "AuthController_getMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "로그인한 유저 정보",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "현재 로그인된 사용자 정보 조회",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/pages/auth/login": {
+      "get": {
+        "operationId": "AuthPagesController_getLogin",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AuthPages"
+        ]
+      }
+    },
+    "/pages/auth/register": {
+      "get": {
+        "operationId": "AuthPagesController_getRegister",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AuthPages"
+        ]
+      }
+    },
+    "/pages/board/posts": {
+      "get": {
+        "operationId": "BoardPagesController_getPostList",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "BoardPages"
+        ]
+      }
+    },
+    "/pages/board/detail": {
+      "get": {
+        "operationId": "BoardPagesController_getPostDetail",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "BoardPages"
+        ]
+      }
+    },
+    "/pages/board/create/post": {
+      "get": {
+        "operationId": "BoardPagesController_createPost",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "BoardPages"
+        ]
+      }
+    },
+    "/pages/board/update/post": {
+      "get": {
+        "operationId": "BoardPagesController_updatePost",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "BoardPages"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "루파봇 API",
+    "description": "루파봇 커뮤니티 + 상점 + 대전 API 문서",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "UpdateNicknameDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "BanUserDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "Many": {
+        "type": "object",
+        "properties": {}
+      },
+      "Single": {
+        "type": "object",
+        "properties": {}
+      },
+      "WithComments": {
+        "type": "object",
+        "properties": {}
+      },
+      "Create": {
+        "type": "object",
+        "properties": {}
+      },
+      "Simple": {
+        "type": "object",
+        "properties": {
+          "postId": {
+            "type": "string",
+            "example": "660fa04149ac491601f005b6"
+          }
+        },
+        "required": [
+          "postId"
+        ]
+      },
+      "Like": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "liked"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "Update": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateReply": {
+        "type": "object",
+        "properties": {}
+      },
+      "BuyEmojiDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateEmojiDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "TokenResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "example": "jwt.access.token.here"
+          }
+        },
+        "required": [
+          "accessToken"
+        ]
+      },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "nickname": {
+            "type": "string",
+            "example": "루파1"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123@"
+          }
+        },
+        "required": [
+          "email",
+          "nickname",
+          "password"
+        ]
+      },
+      "SuccessResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "UserInfoResponseDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "660fa04149ac491601f005b6"
+          },
+          "nickname": {
+            "type": "string",
+            "example": "루파유저"
+          }
+        },
+        "required": [
+          "userId",
+          "nickname"
+        ]
+      }
+    }
+  }
+}

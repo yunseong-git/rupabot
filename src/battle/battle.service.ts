@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { CS_QUESTIONS } from './data/questions';
 
+/**
+  * 최초 매칭 전 대기 공간(waitingQueue) / 2명 모이면 startGame 호출
+*/
 type GameSession = {
     players: [Socket, Socket];
     scores: Map<string, number>;
@@ -14,6 +17,9 @@ export class BattleService {
     private waitingQueue: Socket[] = [];
     private activeGames = new Map<string, GameSession>();
 
+    /**
+   * 최초 매칭 전 대기 공간(waitingQueue) / 2명 모이면 startGame 호출
+   */
     addToWaitingQueue(socket: Socket) {
         this.waitingQueue.push(socket);
         if (this.waitingQueue.length >= 2) {
@@ -25,10 +31,17 @@ export class BattleService {
         }
     }
 
+
+    /**
+   * 게임중 이탈처리 : 세션 즉시 종료, 남은유저는 현재 획득 점수 반영 / 이탈유저는 미반영
+   */
     removeFromGame(socket: Socket) {
         // TODO: 게임 중 이탈 처리
     }
 
+    /**
+   * GameSession 생성 → activeGames Map에 등록 -> 1번 문제 전송
+   */
     startGame(player1: Socket, player2: Socket) {
         const sessionId = `${player1.id}_${player2.id}`;
         const questions = this.getRandomQuestions(5);
