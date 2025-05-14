@@ -53,7 +53,11 @@ export class PostController {
   }
 
   @Public()
+<<<<<<< HEAD
   @Get(':id')
+=======
+  @Get(':id/only-post')
+>>>>>>> 041b884472753cb26fc32316ab377b8d8d5cb5e2
   @ApiOperation({ summary: '단일 게시물 조회' })
   @ApiParam({ name: 'id', description: '게시물 ID' })
   @ApiResponse({ status: 200, description: '단일 게시물 데이터', type: SinglePostResponseDto })
@@ -64,8 +68,13 @@ export class PostController {
   }
 
   @Public()
+<<<<<<< HEAD
   @Get('my/:id')
   @ApiOperation({ summary: '특정 게시물 단일 조회 (내가 작성한 것)(유저태그없음)' })
+=======
+  @Get(':id/only-post/my')
+  @ApiOperation({ summary: '유저태그 없는 단일 게시물 조회' })
+>>>>>>> 041b884472753cb26fc32316ab377b8d8d5cb5e2
   @ApiParam({ name: 'id', description: '게시물 ID' })
   @ApiResponse({ status: 200, description: '단일 게시물 데이터', type: SimplePostResponseDto })
   async getMyPost(@Param('id') id: string): Promise<SimplePostResponseDto> {
@@ -75,6 +84,7 @@ export class PostController {
   }
 
   @Public()
+<<<<<<< HEAD
   @Get('with-comments/:id')
   @ApiOperation({ summary: '게시물 + 부모 댓글 조회' })
   @ApiQuery({ type: PostWithCommentsQueryDto })
@@ -86,6 +96,15 @@ export class PostController {
   ): Promise<PostWithCommentsResponseDto> {
     const post = await this.postQueryService.findPostByIdWithUserTag(postId);
     const comments = await this.commentQueryService.findParentsCommentsByPost(query, postId);
+=======
+  @Get('with-comments')
+  @ApiOperation({ summary: '게시물 + 부모 댓글 조회' })
+  @ApiQuery({ type: PostWithCommentsQueryDto })
+  @ApiResponse({ status: 200, description: '게시물 및 댓글', type: PostWithCommentsResponseDto })
+  async getPostWithComments(@Query() query: PostWithCommentsQueryDto): Promise<PostWithCommentsResponseDto> {
+    const post = await this.postQueryService.findPostByIdWithUserTag(query.postId);
+    const comments = await this.commentQueryService.findParentsCommentsByPost(query);
+>>>>>>> 041b884472753cb26fc32316ab377b8d8d5cb5e2
 
     const result = {
       post: plainToInstance(SinglePostResponseDto, post, { excludeExtraneousValues: true }),
@@ -135,10 +154,17 @@ export class PostController {
   }
 
   /**<@command>게시물 좋아요 반영*/
+<<<<<<< HEAD
   @Post(':id/like')
   @ApiOperation({ summary: '게시물 좋아요/취소 토글' })
   @ApiParam({ name: 'id', description: '게시물 ID' })
   @ApiResponse({ status: 200, description: '좋아요 반영 결과', type: PostLikeResponseDto })
+=======
+  @ApiOperation({ summary: '게시물 좋아요/취소 토글' })
+  @ApiParam({ name: 'id', description: '게시물 ID' })
+  @ApiResponse({ status: 200, description: '좋아요 반영 결과', type: PostLikeResponseDto })
+  @Post(':id/like')
+>>>>>>> 041b884472753cb26fc32316ab377b8d8d5cb5e2
   async postLike(@Param('id') postId: string, @User('userId') userId: string): Promise<PostLikeResponseDto> {
     const result = await this.postCommandService.postLike(postId, userId);
 
@@ -146,6 +172,7 @@ export class PostController {
   }
 
   /**<@command>게시물 수정*/
+<<<<<<< HEAD
   @Patch(':id')
   @ApiOperation({ summary: '게시물 수정' })
   @ApiParam({ name: 'id', description: '게시물 ID' })
@@ -153,6 +180,15 @@ export class PostController {
   @ApiResponse({ status: 200, description: '게시물 수정 완료', type: UpdatePostResponseDto })
   async updatePost(
     @Param('id') postId: string,
+=======
+  @Patch(':postId')
+  @ApiOperation({ summary: '게시물 수정' })
+  @ApiParam({ name: 'postId', description: '게시물 ID' })
+  @ApiBody({ type: UpdatePostDto })
+  @ApiResponse({ status: 200, description: '게시물 수정 완료', type: UpdatePostResponseDto })
+  async updatePost(
+    @Param('postId') postId: string,
+>>>>>>> 041b884472753cb26fc32316ab377b8d8d5cb5e2
     @Body() dto: UpdatePostDto,
     @User('userId') userId: string,
   ): Promise<UpdatePostResponseDto> {
@@ -163,11 +199,19 @@ export class PostController {
   }
 
   /**<@command>게시물 삭제*/
+<<<<<<< HEAD
   @Delete(':id')
   @ApiOperation({ summary: '게시물 삭제 (관련 댓글, 좋아요 포함)' })
   @ApiParam({ name: 'id', description: '게시물 ID' })
   @ApiResponse({ status: 200, description: '게시물 및 관련 댓글/좋아요 삭제 완료' })
   async deletePost(@Param('id') postId: string, @User('userId') userId: string): Promise<DeletePostResponseDto> {
+=======
+  @Delete(':postId')
+  @ApiOperation({ summary: '게시물 삭제 (관련 댓글, 좋아요 포함)' })
+  @ApiParam({ name: 'postId', description: '게시물 ID' })
+  @ApiResponse({ status: 200, description: '게시물 및 관련 댓글/좋아요 삭제 완료' })
+  async deletePost(@Param('postId') postId: string, @User('userId') userId: string): Promise<DeletePostResponseDto> {
+>>>>>>> 041b884472753cb26fc32316ab377b8d8d5cb5e2
     await this.postQueryService.isAuthor(userId, postId); //작성자인지 확인
 
     const now = new Date();

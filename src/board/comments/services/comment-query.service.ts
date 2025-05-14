@@ -1,5 +1,9 @@
 import {
   Injectable,
+<<<<<<< HEAD
+=======
+  UnauthorizedException,
+>>>>>>> 041b884472753cb26fc32316ab377b8d8d5cb5e2
   NotFoundException,
   BadRequestException,
   ForbiddenException,
@@ -36,11 +40,16 @@ export class CommentQueryService {
   }
 
   /**해당 게시물의 전체 댓글 반환(미구분)*/
+<<<<<<< HEAD
   async findAllCommentsByPost(
     query: PostWithCommentsQueryDto,
     postId: string,
   ): Promise<(PlainComment & { userTag: UserTag })[]> {
     const { sort, limit = 10, skip = 0 } = query;
+=======
+  async findAllCommentsByPost(query: PostWithCommentsQueryDto): Promise<(PlainComment & { userTag: UserTag })[]> {
+    const { postId, sort, limit = 10, skip = 0 } = query;
+>>>>>>> 041b884472753cb26fc32316ab377b8d8d5cb5e2
 
     const filter = { postId: postId };
     const selection = '+isDeleted pId content likecount createdAt isUpdated authorId';
@@ -50,11 +59,16 @@ export class CommentQueryService {
   }
 
   /**해당 게시물의 부모 댓글 반환(답글 미포함)*/
+<<<<<<< HEAD
   async findParentsCommentsByPost(
     query: PostWithCommentsQueryDto,
     postId: string,
   ): Promise<(PlainComment & { userTag: UserTag })[]> {
     const { sort, limit = 10, skip = 0 } = query;
+=======
+  async findParentsCommentsByPost(query: PostWithCommentsQueryDto): Promise<(PlainComment & { userTag: UserTag })[]> {
+    const { postId, sort, limit = 10, skip = 0 } = query;
+>>>>>>> 041b884472753cb26fc32316ab377b8d8d5cb5e2
 
     const filter = { postId: postId, pId: null };
     const selection = '+isDeleted content likecount createdAt isUpdated authorId';

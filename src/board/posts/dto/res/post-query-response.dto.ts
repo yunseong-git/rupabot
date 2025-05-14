@@ -1,13 +1,21 @@
+<<<<<<< HEAD
 import { ApiProperty } from '@nestjs/swagger';
+=======
+>>>>>>> 041b884472753cb26fc32316ab377b8d8d5cb5e2
 import { Exclude, Expose } from 'class-transformer';
 import { CommentsNotPidResponseDto } from 'src/board/comments/dto/res/comment-query-response.dto';
 
 /**유저 태그 타입 */
+<<<<<<< HEAD
 export class UserTag {
   @ApiProperty({ example: '루팡' })
   nickname: string;
 
   @ApiProperty({ example: '다이아루파' })
+=======
+export type UserTag = {
+  nickname: string;
+>>>>>>> 041b884472753cb26fc32316ab377b8d8d5cb5e2
   rank: string;
 };
 
@@ -67,7 +75,11 @@ export class SinglePostResponseDto extends SimplePostResponseDto {
   userTag: UserTag;
 }
 
+<<<<<<< HEAD
 /**<res>단일 게시물 및 댓글목록 응답*/
+=======
+/**<res>단일 게시물 및 댓글목록 응답 */
+>>>>>>> 041b884472753cb26fc32316ab377b8d8d5cb5e2
 export class PostWithCommentsResponseDto {
   @Expose()
   post: SinglePostResponseDto;
