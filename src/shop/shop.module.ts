@@ -1,19 +1,12 @@
 import { Module } from '@nestjs/common';
+import { EmojiController } from './emojis/emoji.controller';
+import { EmojiService } from './emojis/emoji.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ShopService } from './shop.service';
-import { ShopController } from './shop.controller';
-import { Item, ItemSchema } from './schemas/item.schema';
-import { UsersModule } from 'src/users/users.module';
-import { WalletModule } from 'src/wallet/wallet.module';
-
+import { EmojiSchema } from './schemas/emoji.schema';
+import { PassportModule } from '@nestjs/passport';
 @Module({
-  imports: [MongooseModule.forFeature([
-    { name: Item.name, schema: ItemSchema }
-  ]),
-    UsersModule,
-    WalletModule,
-  ],
-  controllers: [ShopController],
-  providers: [ShopService],
+  imports: [MongooseModule.forFeature([{ name: 'Emoji', schema: EmojiSchema }]), PassportModule],
+  controllers: [EmojiController],
+  providers: [EmojiService],
 })
-export class ShopModule { }
+export class ShopModule {}

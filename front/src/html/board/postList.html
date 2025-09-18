@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>루파봇 게시판</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="notebook">
+  <div class="left-page">
+    <h1>루파봇 게시판</h1>
+    <div class="tab-bar">
+      <button class="tab" data-type="">전체</button>
+      <button class="tab" data-type="free">자유</button>
+      <button class="tab" data-type="cs">질문</button>
+    </div>
+    <div class="search-section">
+      <input type="text" id="search-input" placeholder="검색어를 입력하세요" />
+      <button id="search-button">검색</button>
+    </div>
+    <table class="post-table">
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>제목</th>
+          <th>작성자</th>
+          <th>작성일</th>
+          <th>조회</th>
+          <th>추천</th>
+        </tr>
+      </thead>
+      <tbody id="post-list">
+        <!-- 게시글이 여기에 삽입됨 -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="right-page">
+    <div class="header">
+      <button class="login-btn">로그인</button>
+    </div>
+    <div class="sort-section">
+      <select id="sort-select">
+        <option value="latest">최신순</option>
+        <option value="like">좋아요순</option>
+      </select>
+    </div>
+    <div id="page-numbers" class="pagination"></div>
+  </div>
+
+  <script src="/scripts/board/postList.js"></script>
+</body>
+</html>

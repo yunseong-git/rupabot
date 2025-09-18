@@ -1,17 +1,18 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
+import { UsersController } from './controllers/user.controller';
+import { UserQueryService } from './service/user-query.service';
+import { AdminUserController } from './controllers/admin-user.controller';
+import { UserCommandService } from './service/user-command.service';
+
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './schemas/user.schema';
+import { UserSchema } from './schemas/user.schema';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema }
-    ])
-  ],
-  exports: [MongooseModule,UsersService], //외부에서 mongoose모델 허용
-  controllers: [UsersController],
-  providers: [UsersService],
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),PassportModule],
+  exports: [UserQueryService, UserCommandService],
+  controllers: [UsersController, AdminUserController],
+  providers: [UserQueryService, UserCommandService],
 })
 export class UsersModule {}
